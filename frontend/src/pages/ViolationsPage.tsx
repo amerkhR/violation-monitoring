@@ -1,0 +1,158 @@
+import { useEffect, useState } from "react";
+import { api } from "../api";
+
+type Violation = {
+  id: number;
+  employeeId: number;
+  employee: string;
+  violationTypeId: number;
+  violationType: string;
+  description: string;
+  severity: number;
+  dateTimeUtc: string;
+  inspectorId: number;
+  inspector: string;
+  photoPath?: string;
+  videoPath?: string;
+  penaltyPoints: number;
+};
+
+export function ViolationsPage() {
+  const [rows, setRows] = useState<Violation[]>([]);
+  const [employees, setEmployees] = useState<{ id: number; fullName: string }[]>([]);
+  const [types, setTypes] = useState<{ id: number; name: string }[]>([]);
+  const [employeeId, setEmployeeId] = useState(0);
+  const [violationTypeId, setViolationTypeId] = useState(0);
+  const [description, setDescription] = useState("");
+  const [severity, setSeverity] = useState(2);
+  const [dateTimeUtc, setDateTimeUtc] = useState(new Date().toISOString().slice(0, 16));
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [video, setVideo] = useState<File | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const [filterEmployeeId, setFilterEmployeeId] = useState<number>(0);
+  const [filterTypeId, setFilterTypeId] = useState<number>(0);
+  const role = localStorage.getItem("role");
+
+  const load = () =>
+    api.get("/violations", {
+      params: {
+        employeeId: filterEmployeeId || undefined,
+        violationTypeId: filterTypeId || undefined
+      }
+    }).then((res) => setRows(res.data));
+
+  useEffect(() => {
+    api.get("/employees").then((res) => setEmployees(res.data));
+    api.get("/violation-types").then((res) => setTypes(res.data));
+  }, []);
+
+  useEffect(() => { load(); }, [filterEmployeeId, filterTypeId]);
+
+  const save = async () => {
+    if (!employeeId || !violationTypeId || !description.trim()) return;
+    const form = new FormData();
+    form.append("employeeId", String(employeeId));
+    form.append("violationTypeId", String(violationTypeId));
+    form.append("description", description);
+    form.append("severity", String(severity));
+    form.append("dateTimeUtc", new Date(dateTimeUtc).toISOString());
+    if (photo) form.append("photo", photo);
+    if (video) form.append("video", video);
+
+    if (editingId) {
+      await api.put(`/violations/${editingId}`, form, { headers: { "Content-Type": "multipart/form-data" } });
+    } else {
+      await api.post("/violations", form, { headers: { "Content-Type": "multipart/form-data" } });
+    }
+    setEditingId(null);
+    setDescription("");
+    setPhoto(null);
+    setVideo(null);
+    await load();
+  };
+
+  const edit = (row: Violation) => {
+    setEditingId(row.id);
+    setEmployeeId(row.employeeId);
+    setViolationTypeId(row.violationTypeId);
+    setDescription(row.description);
+    setSeverity(row.severity);
+    setDateTimeUtc(new Date(row.dateTimeUtc).toISOString().slice(0, 16));
+  };
+
+  const remove = async (id: number) => {
+    await api.delete(`/violations/${id}`);
+    await load();
+  };
+
+  return (
+    <section>
+      <h1>Нарушения</h1>
+      <div className="form-row card">
+        <select value={filterEmployeeId} onChange={(e) => setFilterEmployeeId(Number(e.target.value))}>
+          <option value={0}>Все сотрудники</option>
+          {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
+        </select>
+        <select value={filterTypeId} onChange={(e) => setFilterTypeId(Number(e.target.value))}>
+          <option value={0}>Все типы</option>
+          {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
+        </select>
+      </div>
+      <div className="form-row card">
+        <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))}>
+          <option value={0}>Сотрудник</option>
+          {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
+        </select>
+        <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))}>
+          <option value={0}>Тип нарушения</option>
+          {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
+        </select>
+        <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Описание" />
+        <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
+          <option value={1}>Low</option>
+          <option value={2}>Medium</option>
+          <option value={3}>High</option>
+        </select>
+        <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
+        <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
+        <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
+        <button onClick={save}>{editingId ? "Сохранить изменения" : "Создать нарушение"}</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Сотрудник</th>
+            <th>Тип</th>
+            <th>Описание</th>
+            <th>Серьезность</th>
+            <th>Инспектор</th>
+            <th>Баллы</th>
+            <th>Медиа</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((x) => (
+            <tr key={x.id}>
+              <td>{x.employee}</td>
+              <td>{x.violationType}</td>
+              <td>{x.description}</td>
+              <td>{x.severity}</td>
+              <td>{x.inspector}</td>
+              <td>{x.penaltyPoints}</td>
+              <td>
+                {x.photoPath && <a href={`http://localhost:5000${x.photoPath}`} target="_blank" rel="noreferrer">Фото</a>}
+                {x.videoPath && <> {x.photoPath ? "|" : ""} <a href={`http://localhost:5000${x.videoPath}`} target="_blank" rel="noreferrer">Видео</a></>}
+              </td>
+              <td>
+                <button onClick={() => edit(x)}>Редактировать</button>{" "}
+                {(role === "Admin" || role === "Inspector") && <button onClick={() => remove(x.id)}>Удалить</button>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}

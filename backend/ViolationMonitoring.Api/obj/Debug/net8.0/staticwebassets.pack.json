@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ViolationMonitoring.Api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.ViolationMonitoring.Api.props",
+      "PackagePath": "build\\ViolationMonitoring.Api.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ViolationMonitoring.Api.props",
+      "PackagePath": "buildMultiTargeting\\ViolationMonitoring.Api.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ViolationMonitoring.Api.props",
+      "PackagePath": "buildTransitive\\ViolationMonitoring.Api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

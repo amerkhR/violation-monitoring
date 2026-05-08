@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "Hash": "ijh8xtgAAADYJ1jaRPVXpGdnZAaihgF+5pyj+kzPv5E=",
+  "Source": "ViolationMonitoring.Api",
+  "BasePath": "_content/ViolationMonitoring.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ViolationMonitoring.Api/wwwroot",
+      "Source": "ViolationMonitoring.Api",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg"
+    },
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
+    }
+  ]
+}
