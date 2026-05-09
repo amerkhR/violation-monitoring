@@ -17,6 +17,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<User>().HasIndex(x => x.Login).IsUnique();
         modelBuilder.Entity<Department>().HasIndex(x => x.Name).IsUnique();
         modelBuilder.Entity<Employee>().Property(x => x.HireDate).HasConversion<DateOnlyConverter>();
+        modelBuilder.Entity<User>()
+            .HasOne(x => x.Employee)
+            .WithOne()
+            .HasForeignKey<User>(x => x.EmployeeId)
+            .OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<Violation>()
             .HasOne(x => x.Inspector)
             .WithMany()

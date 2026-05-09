@@ -11,6 +11,27 @@ public record EmployeeUpdateRequest(string FullName, int DepartmentId, string Po
 public record ViolationTypeRequest(string Name, int DefaultPoints, SeverityLevel SeverityDefault, bool IsActive);
 public record InspectorCreateRequest(string Login, string Password, string FullName, bool IsActive);
 public record InspectorUpdateRequest(string FullName, bool IsActive);
+
+public record UserCreateRequest(
+    string Login,
+    string Password,
+    string FullName,
+    UserRole Role,
+    bool IsActive,
+    int DepartmentId,
+    string Position,
+    DateOnly HireDate);
+
+public record UserUpdateRequest(
+    string Login,
+    string FullName,
+    UserRole Role,
+    bool IsActive,
+    int DepartmentId,
+    string Position,
+    DateOnly HireDate);
+
+public record UserPasswordUpdateRequest(string CurrentPassword, string NewPassword);
 public record ReportCreateRequest(string Type, string ParamsJson);
 
 public record ViolationCreateRequest(

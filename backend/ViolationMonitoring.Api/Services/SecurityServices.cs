@@ -45,7 +45,7 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
         var jwt = configuration.GetSection("Jwt");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var minutes = int.TryParse(jwt["ExpiresMinutes"], out var m) ? m : 120;
+        var minutes = int.TryParse(jwt["ExpiresMinutes"], out var m) ? m : 1440;
 
         var claims = new List<Claim>
         {

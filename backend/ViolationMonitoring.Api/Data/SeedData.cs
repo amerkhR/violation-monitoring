@@ -28,7 +28,17 @@ public static class SeedData
 
         if (!db.Departments.Any())
         {
-            db.Departments.AddRange(new Department { Name = "Производство" }, new Department { Name = "Склад" });
+            db.Departments.AddRange(
+                new Department { Name = "Производственный цех" },
+                new Department { Name = "Склад" },
+                new Department { Name = "Отдел технического контроля" },
+                new Department { Name = "Ремонтно-механический отдел" },
+                new Department { Name = "Отдел главного энергетика" },
+                new Department { Name = "Бухгалтерия" },
+                new Department { Name = "Отдел кадров" },
+                new Department { Name = "Служба охраны труда" },
+                new Department { Name = "Транспортный отдел" },
+                new Department { Name = "Охрана" });
         }
 
         if (!db.ViolationTypes.Any())

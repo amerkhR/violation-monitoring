@@ -338,3 +338,4 @@
 /home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/obj/Debug/net8.0/ViolationMonitoring.Api.pdb
 /home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/obj/Debug/net8.0/ViolationMonitoring.Api.genruntimeconfig.cache
 /home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/obj/Debug/net8.0/ref/ViolationMonitoring.Api.dll
+/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/obj/Debug/net8.0/ViolationMonitoring.Api.sourcelink.json

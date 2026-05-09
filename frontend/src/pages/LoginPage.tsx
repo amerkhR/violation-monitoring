@@ -16,7 +16,7 @@ export function LoginPage({ onLogin }: Props) {
       const { data } = await api.post("/auth/login", { login, password });
       onLogin(data.token, data.role);
     } catch (error: any) {
-      setError(error?.response?.data ?? "Ошибка авторизации");
+      setError(error?.response?.data?.detail ?? "Ошибка авторизации");
     }
   };
 
