@@ -27,7 +27,19 @@ export function App() {
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [login, setLogin] = useState(localStorage.getItem("login") ?? "");
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved ? saved === "dark" : true;
+  });
   const navigate = useNavigate();
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
+      localStorage.setItem("theme", newMode ? "dark" : "light");
+      return newMode;
+    });
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -66,7 +78,7 @@ export function App() {
   const avatarUrl = profile?.photoPath ? `${API_ORIGIN}${profile.photoPath}` : undefined;
 
   return (
-    <div className="layout">
+    <div className={`layout ${isDarkMode ? "dark-mode" : "light-mode"}`}>
       <aside className="sidebar">
         <h2>Monitoring</h2>
         <div className="panel-label">{role === "Admin" ? "Панель администратора" : "Панель инспектора"}</div>
@@ -82,6 +94,13 @@ export function App() {
       </aside>
       <main className="content">
         <div className="topbar">
+          <button 
+            className="theme-toggle" 
+            onClick={toggleTheme}
+            title={isDarkMode ? "Включить светлый режим" : "Включить темный режим"}
+          >
+            {isDarkMode ? "☀️" : "🌙"}
+          </button>
           <Link className="profile-link" to="/profile">
             <div className="profile-avatar">
               {avatarUrl ? (

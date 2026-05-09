@@ -43,6 +43,7 @@ body, html, #root {
 .topbar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-bottom: 16px;
 }
 
@@ -286,6 +287,171 @@ select {
 
 .error {
   color: #ff8e8e;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #33425f;
+  background: rgba(255, 255, 255, 0.04);
+  color: #e9eef5;
+  cursor: pointer;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-right: 12px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #4a5a7a;
+  transform: scale(1.08) rotate(20deg);
+}
+
+.theme-toggle:active {
+  transform: scale(0.92) rotate(20deg);
+}
+
+/* Spin animation for theme toggle */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.theme-toggle.toggle-spin {
+  animation: spin 0.4s ease-in-out;
+}
+
+/* Light Mode Styles */
+.layout.light-mode {
+  color-scheme: light;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.layout.light-mode .sidebar {
+  background: #ffffff;
+  border-right-color: #e5e5e7;
+}
+
+.layout.light-mode .sidebar a {
+  color: #0071e3;
+}
+
+.layout.light-mode .sidebar a:hover {
+  color: #0077ed;
+}
+
+.layout.light-mode .sidebar button {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .sidebar button:hover {
+  background: #efefef;
+}
+
+.layout.light-mode .content {
+  background: #f5f5f7;
+}
+
+.layout.light-mode .topbar {
+  background: transparent;
+}
+
+.layout.light-mode .profile-link {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: #d2d2d7;
+  color: #1d1d1f;
+}
+
+.layout.light-mode .profile-link:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.layout.light-mode .profile-avatar {
+  background: #e5e5e7;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .avatar-fallback {
+  color: #1d1d1f;
+}
+
+.layout.light-mode .theme-toggle {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: #d2d2d7;
+  color: #1d1d1f;
+}
+
+.layout.light-mode .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: #0071e3;
+}
+
+.layout.light-mode .card {
+  background: #ffffff;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .profile-field {
+  background: #f5f5f7;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .profile-field span {
+  color: #666666;
+}
+
+.layout.light-mode .profile-field strong {
+  color: #1d1d1f;
+}
+
+.layout.light-mode input,
+.layout.light-mode button {
+  background: #ffffff;
+  color: #1d1d1f;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode input::placeholder {
+  color: #999999;
+}
+
+.layout.light-mode button:hover {
+  background: #f5f5f7;
+  border-color: #0071e3;
+}
+
+.layout.light-mode select {
+  background: #ffffff;
+  color: #1d1d1f;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode table {
+  background: #ffffff;
+}
+
+.layout.light-mode th,
+.layout.light-mode td {
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .modal-overlay {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 900px) {

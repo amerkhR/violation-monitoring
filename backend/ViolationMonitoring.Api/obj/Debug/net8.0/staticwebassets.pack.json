@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
     },
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/f1608447a0c34bf79665274eec58f8c1.jpeg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/f1608447a0c34bf79665274eec58f8c1.jpeg"
+    },
+    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ViolationMonitoring.Api.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

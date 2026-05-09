@@ -1,6 +1,29 @@
 import { useEffect, useState } from "react";
-import { PieChart, Pie, Tooltip, BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Tooltip, BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, Cell } from "recharts";
 import { api } from "../api";
+
+const CustomTooltip = (props: any) => {
+  const { active, payload } = props;
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: '#fff',
+        padding: '8px 12px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        color: '#000'
+      }}>
+        <p style={{ margin: 0, color: '#000', fontWeight: 'bold' }}>
+          {payload[0].payload.department}
+        </p>
+        <p style={{ margin: '4px 0 0 0', color: '#000' }}>
+          {payload[0].name}: {payload[0].value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export function DashboardPage() {
   const [summary, setSummary] = useState({ totalViolations: 0, totalPenaltyPoints: 0 });
@@ -27,7 +50,23 @@ export function DashboardPage() {
           <h3>По типам нарушений</h3>
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
-              <Pie data={byType} dataKey="count" nameKey="type" outerRadius={90} />
+              <Pie 
+                data={byType} 
+                dataKey="count" 
+                nameKey="type" 
+                outerRadius={90}
+              >
+                {byType.map((_, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={[
+                      "#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A", "#98D8C8",
+                      "#F7DC6F", "#BB8FCE", "#85C1E2", "#F8B88B", "#A3E4D7",
+                      "#F5A962", "#70C1B3", "#FF6F91", "#4D96FF", "#6C5B7B"
+                    ][index % 15]}
+                  />
+                ))}
+              </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
@@ -39,8 +78,8 @@ export function DashboardPage() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="department" />
               <YAxis />
-              <Tooltip />
-              <Bar dataKey="count" fill="#46a6ff" />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="count" fill="#46a6ff" name="кол-во" />
             </BarChart>
           </ResponsiveContainer>
         </div>

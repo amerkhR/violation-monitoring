@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "8obEBe8EuLUseZcQwXzmL5diR++97jp6NNT8NkqZPW4=",
+  "Hash": "b4vyxf6AVx6xxonaAGNq5mRTmGqEPX72idUDxro4aZk=",
   "Source": "ViolationMonitoring.Api",
   "BasePath": "_content/ViolationMonitoring.Api",
   "Mode": "Default",
@@ -72,6 +72,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
+    },
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/f1608447a0c34bf79665274eec58f8c1.jpeg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/f1608447a0c34bf79665274eec58f8c1.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/f1608447a0c34bf79665274eec58f8c1.jpeg"
     }
   ]
 }
