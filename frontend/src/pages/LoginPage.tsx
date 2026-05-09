@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { api } from "../api";
 
 type Props = {
-  onLogin: (token: string, role: string) => void;
+  onLogin: (token: string, role: string, login: string) => void;
 };
 
 export function LoginPage({ onLogin }: Props) {
@@ -14,7 +14,7 @@ export function LoginPage({ onLogin }: Props) {
     e.preventDefault();
     try {
       const { data } = await api.post("/auth/login", { login, password });
-      onLogin(data.token, data.role);
+      onLogin(data.token, data.role, login);
     } catch (error: any) {
       setError(error?.response?.data?.detail ?? "Ошибка авторизации");
     }

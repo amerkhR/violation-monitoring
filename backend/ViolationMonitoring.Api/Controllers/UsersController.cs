@@ -45,6 +45,43 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
         return Ok(users);
     }
 
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId == 0)
+        {
+            return Unauthorized();
+        }
+
+        var user = await db.Users
+            .Include(x => x.Employee)
+            .ThenInclude(e => e.Department)
+            .FirstOrDefaultAsync(x => x.Id == currentUserId);
+
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new
+        {
+            user.Id,
+            user.Login,
+            user.FullName,
+            Role = user.Role.ToString(),
+            user.IsActive,
+            Department = user.Employee != null
+                ? user.Employee.Department != null
+                    ? user.Employee.Department.Name
+                    : null
+                : null,
+            Position = user.Employee != null ? user.Employee.Position : null,
+            HireDate = user.Employee?.HireDate,
+            PhotoPath = user.Employee != null ? user.Employee.PhotoPath : null
+        });
+    }
+
     [HttpPost]
     [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> Create([FromBody] UserCreateRequest request)

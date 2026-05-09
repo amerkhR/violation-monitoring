@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/0bd8e60e046544b18eb43cb1b69f06ce.jpeg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/0bd8e60e046544b18eb43cb1b69f06ce.jpeg"
+    },
+    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg",
       "PackagePath": "staticwebassets/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg"
     },

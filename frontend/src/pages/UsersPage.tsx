@@ -55,6 +55,7 @@ export function UsersPage() {
   const [departments, setDepartments] = useState<Department[]>(defaultDepartments);
   const [form, setForm] = useState({ ...initialState });
   const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -105,10 +106,24 @@ export function UsersPage() {
     });
   };
 
+  useEffect(() => {
+    if (!photo) {
+      setPhotoPreview(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(photo);
+    setPhotoPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [photo]);
+
   const fullName = [form.lastName, form.firstName, form.middleName].filter(Boolean).join(" ");
 
   const save = async () => {
-    if (!form.login || !form.lastName || !form.firstName || !form.departmentId || !form.position || !form.hireDate) {
+    const departmentId = form.role === "Inspector" ? departmentOptions[0]?.id ?? form.departmentId : form.departmentId;
+    const position = form.role === "Inspector" ? form.position || "Инспектор" : form.position;
+
+    if (!form.login || !form.lastName || !form.firstName || !form.hireDate || (form.role !== "Inspector" && (!departmentId || !position))) {
       alert("Заполните обязательные поля.");
       return;
     }
@@ -128,8 +143,8 @@ export function UsersPage() {
         login: form.login,
         fullName,
         role: form.role,
-        departmentId: form.departmentId,
-        position: form.position,
+        departmentId,
+        position,
         hireDate: form.hireDate,
         isActive: form.isActive,
         password: form.password ? "***" : null
@@ -141,8 +156,8 @@ export function UsersPage() {
           fullName,
           role: form.role,
           isActive: form.isActive,
-          departmentId: form.departmentId,
-          position: form.position,
+          departmentId,
+          position,
           hireDate: form.hireDate
         });
 
@@ -163,8 +178,8 @@ export function UsersPage() {
           fullName,
           role: form.role,
           isActive: form.isActive,
-          departmentId: form.departmentId,
-          position: form.position,
+          departmentId,
+          position,
           hireDate: form.hireDate
         });
         const userId = response.data.id;
@@ -227,6 +242,12 @@ export function UsersPage() {
             </div>
             <div className="modal-grid">
               <div className="modal-row">
+                <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+                  <option value="Employee">Сотрудник</option>
+                  <option value="Inspector">Инспектор</option>
+                </select>
+              </div>
+              <div className="modal-row">
                 <input value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} placeholder="Логин" />
               </div>
               <div className="modal-row">
@@ -234,21 +255,28 @@ export function UsersPage() {
                 <input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} placeholder="Имя" />
                 <input value={form.middleName} onChange={(e) => setForm({ ...form, middleName: e.target.value })} placeholder="Отчество" />
               </div>
-              <div className="modal-row">
-                <select value={form.departmentId} onChange={(e) => setForm({ ...form, departmentId: Number(e.target.value) })}>
-                  <option value={0}>Выберите отдел</option>
-                  {departmentOptions.map((x) => (
-                    <option value={x.id} key={x.id}>{x.name}</option>
-                  ))}
-                </select>
-                <input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} placeholder="Должность" />
-              </div>
+              {form.role !== "Inspector" && (
+                <div className="modal-row">
+                  <select value={form.departmentId} onChange={(e) => setForm({ ...form, departmentId: Number(e.target.value) })}>
+                    <option value={0}>Выберите отдел</option>
+                    {departmentOptions.map((x) => (
+                      <option value={x.id} key={x.id}>{x.name}</option>
+                    ))}
+                  </select>
+                  <input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} placeholder="Должность" />
+                </div>
+              )}
               <div className="modal-row">
                 <label style={{ width: "100%" }}>
                   Фото сотрудника
                   <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
                 </label>
               </div>
+              {photoPreview && (
+                <div className="modal-row photo-preview">
+                  <img src={photoPreview} alt="Фото сотрудника" />
+                </div>
+              )}
               <div className="modal-row">
                 <label className="password-field">
                   <input
@@ -270,11 +298,10 @@ export function UsersPage() {
                 </label>
               </div>
               <div className="modal-row">
-                <input type="date" value={form.hireDate} onChange={(e) => setForm({ ...form, hireDate: e.target.value })} />
-                <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
-                  <option value="Employee">Сотрудник</option>
-                  <option value="Inspector">Инспектор</option>
-                </select>
+                <label style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
+                  <span>Дата приёма</span>
+                  <input type="date" value={form.hireDate} onChange={(e) => setForm({ ...form, hireDate: e.target.value })} />
+                </label>
               </div>
               <div className="modal-row">
                 <label style={{ display: "flex", alignItems: "center" }}>
