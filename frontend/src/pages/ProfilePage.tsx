@@ -10,8 +10,8 @@ type Profile = {
   department: string | null;
   position: string | null;
   hireDate: string | null;
-  photoPath: string | null;
-};
+  photoPath: string | null;  violationCount?: number;
+  penaltyPoints?: number;};
 
 export function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -44,17 +44,16 @@ export function ProfilePage() {
   return (
     <div className="profile-card">
       <div className="card profile-header">
-        <div className="profile-avatar">
+        <div className="profile-avatar-large">
           {avatarUrl ? (
             <img src={avatarUrl} alt="Аватар пользователя" />
           ) : (
-            <div className="avatar-fallback">{profile.login[0]?.toUpperCase() ?? "?"}</div>
+            <div className="avatar-fallback-large">{profile.login[0]?.toUpperCase() ?? "?"}</div>
           )}
         </div>
         <div className="profile-meta">
           <h1>{profile.fullName}</h1>
           <strong>@{profile.login}</strong>
-          <span>{profile.role === "Admin" ? "Администратор" : profile.role}</span>
         </div>
       </div>
       <div className="card profile-details">
@@ -64,16 +63,32 @@ export function ProfilePage() {
         </div>
         <div className="profile-field">
           <span>Должность</span>
-          <strong>{profile.position || "—"}</strong>
+          <strong>{profile.role === "Admin" ? "Администратор" : (profile.position || "—")}</strong>
         </div>
-        <div className="profile-field">
-          <span>Отдел</span>
-          <strong>{profile.department || "—"}</strong>
-        </div>
-        <div className="profile-field">
-          <span>Дата приёма</span>
-          <strong>{profile.hireDate ? profile.hireDate.split("T")[0] : "—"}</strong>
-        </div>
+        {profile.role !== "Admin" && (
+          <div className="profile-field">
+            <span>Отдел</span>
+            <strong>{profile.department || "—"}</strong>
+          </div>
+        )}
+        {profile.role !== "Admin" && (
+          <div className="profile-field">
+            <span>Дата приёма</span>
+            <strong>{profile.hireDate ? profile.hireDate.split("T")[0] : "—"}</strong>
+          </div>
+        )}
+        {profile.role !== "Admin" && (
+          <div className="profile-field">
+            <span>Нарушения</span>
+            <strong>{profile.violationCount ?? 0}</strong>
+          </div>
+        )}
+        {profile.role !== "Admin" && (
+          <div className="profile-field">
+            <span>Штрафные баллы</span>
+            <strong>{profile.penaltyPoints ?? 0}</strong>
+          </div>
+        )}
       </div>
     </div>
   );

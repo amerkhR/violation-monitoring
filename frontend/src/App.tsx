@@ -84,7 +84,7 @@ export function App() {
         <div className="panel-label">{role === "Admin" ? "Панель администратора" : "Панель инспектора"}</div>
         <nav>
           <Link to="/">Дашборд</Link>
-          <Link to="/employees">Сотрудники</Link>
+          {role !== "Admin" && <Link to="/employees">Сотрудники</Link>}
           <Link to="/violations">Нарушения</Link>
           {role === "Admin" && <Link to="/users">Пользователи</Link>}
           {role === "Admin" && <Link to="/violation-types">Типы нарушений</Link>}

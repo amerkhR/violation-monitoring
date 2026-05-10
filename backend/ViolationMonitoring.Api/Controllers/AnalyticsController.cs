@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,14 +53,72 @@ public class AnalyticsController(AppDbContext db) : ControllerBase
     }
 
     [HttpGet("by-violation-types")]
-    public async Task<IActionResult> ByTypes()
+    public async Task<IActionResult> ByTypes([FromQuery] bool employeeOnly = false)
     {
-        var data = await db.Violations
+        var query = db.Violations
             .Include(x => x.ViolationType)
+            .Include(x => x.Employee)
+            .AsQueryable();
+
+        if (employeeOnly || User.IsInRole(nameof(UserRole.Employee)))
+        {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId <= 0)
+            {
+                return Unauthorized();
+            }
+
+            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
+            if (user?.EmployeeId == null)
+            {
+                return Ok(new List<object>());
+            }
+
+            query = query.Where(x => x.EmployeeId == user.EmployeeId);
+        }
+
+        var data = await query
             .GroupBy(x => x.ViolationType!.Name)
             .Select(g => new { type = g.Key, count = g.Count() })
             .OrderByDescending(x => x.count)
             .ToListAsync();
         return Ok(data);
+    }
+
+    [HttpGet("user-stats")]
+    public async Task<IActionResult> UserStats()
+    {
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId <= 0)
+        {
+            return Unauthorized();
+        }
+
+        var user = await db.Users
+            .Include(x => x.Employee)
+            .FirstOrDefaultAsync(x => x.Id == currentUserId);
+
+        if (user?.EmployeeId == null)
+        {
+            return Ok(new { violations = 0, penaltyPoints = 0 });
+        }
+
+        var violations = await db.Violations
+            .Where(x => x.EmployeeId == user.EmployeeId)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            violations = violations.Count,
+            penaltyPoints = violations.Sum(x => x.PenaltyPoints)
+        });
+    }
+
+    private int GetCurrentUserId()
+    {
+        var raw = User.FindFirstValue(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)
+            ?? User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)
+            ?? "0";
+        return int.TryParse(raw, out var value) ? value : 0;
     }
 }

@@ -29,16 +29,12 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
                 x.FullName,
                 Role = x.Role.ToString(),
                 x.IsActive,
-                Department = x.Employee != null
-                    ? x.Employee.Department != null
-                        ? x.Employee.Department.Name
-                        : null
-                    : null,
-                Position = x.Employee != null ? x.Employee.Position : null,
-                HireDate = x.Employee != null ? x.Employee.HireDate : (DateOnly?)null,
-                PhotoPath = x.Employee != null ? x.Employee.PhotoPath : null,
-                ViolationCount = x.Employee != null ? x.Employee.Violations.Count : 0,
-                PenaltyPoints = x.Employee != null ? x.Employee.Violations.Sum(v => (int?)v.PenaltyPoints) ?? 0 : 0
+                Department = x.Employee == null ? null : x.Employee.Department == null ? null : x.Employee.Department.Name,
+                Position = x.Employee == null ? null : x.Employee.Position,
+                HireDate = x.Employee == null ? (DateOnly?)null : x.Employee.HireDate,
+                PhotoPath = x.Employee == null ? null : x.Employee.PhotoPath,
+                ViolationCount = x.Employee == null ? 0 : x.Employee.Violations.Count,
+                PenaltyPoints = x.Employee == null ? 0 : x.Employee.Violations.Sum(v => (int?)v.PenaltyPoints) ?? 0
             })
             .ToListAsync();
 
@@ -64,6 +60,14 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
             return NotFound();
         }
 
+        var violationCount = 0;
+        var penaltyPoints = 0;
+        if (user.EmployeeId != null)
+        {
+            violationCount = await db.Violations.CountAsync(x => x.EmployeeId == user.EmployeeId);
+            penaltyPoints = await db.Violations.Where(x => x.EmployeeId == user.EmployeeId).SumAsync(x => (int?)x.PenaltyPoints) ?? 0;
+        }
+
         return Ok(new
         {
             user.Id,
@@ -71,14 +75,12 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
             user.FullName,
             Role = user.Role.ToString(),
             user.IsActive,
-            Department = user.Employee != null
-                ? user.Employee.Department != null
-                    ? user.Employee.Department.Name
-                    : null
-                : null,
-            Position = user.Employee != null ? user.Employee.Position : null,
+            Department = user.Employee?.Department?.Name,
+            Position = user.Employee?.Position,
             HireDate = user.Employee?.HireDate,
-            PhotoPath = user.Employee != null ? user.Employee.PhotoPath : null
+            PhotoPath = user.Employee?.PhotoPath,
+            ViolationCount = violationCount,
+            PenaltyPoints = penaltyPoints
         });
     }
 

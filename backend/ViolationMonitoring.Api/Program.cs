@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,8 +9,6 @@ using ViolationMonitoring.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:5001");
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -19,8 +18,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>("database");
 
+var rawConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=ViolationMonitoring.db";
+var dbPath = rawConnectionString.Replace("Data Source=", "", StringComparison.OrdinalIgnoreCase).Trim();
+if (!Path.IsPathRooted(dbPath))
+{
+    dbPath = Path.Combine(builder.Environment.ContentRootPath, dbPath);
+}
+var absoluteConnectionString = $"Data Source={dbPath}";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(absoluteConnectionString));
 
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -94,10 +101,6 @@ app.MapHealthChecks("/health");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (app.Environment.IsDevelopment())
-    {
-        await db.Database.EnsureDeletedAsync();
-    }
     await db.Database.EnsureCreatedAsync();
     SeedData.Initialize(db, scope.ServiceProvider.GetRequiredService<IPasswordHasher>());
 }

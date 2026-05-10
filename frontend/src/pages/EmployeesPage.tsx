@@ -69,9 +69,9 @@ export function EmployeesPage() {
             <th>ФИО</th>
             <th>Отдел</th>
             <th>Должность</th>
-            <th>Нарушения</th>
-            <th>Баллы</th>
-            <th>Действия</th>
+            {role !== "Employee" && <th>Нарушения</th>}
+            {role !== "Employee" && <th>Баллы</th>}
+            {role !== "Employee" && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
@@ -80,17 +80,19 @@ export function EmployeesPage() {
               <td>{x.fullName}</td>
               <td>{x.department}</td>
               <td>{x.position}</td>
-              <td>{x.violationCount}</td>
-              <td>{x.penaltyPoints}</td>
-              <td>
-                {role === "Admin" ? (
-                  <>
-                    <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhotoByEmployee((prev) => ({ ...prev, [x.id]: e.target.files?.[0] ?? null }))} />
-                    <button onClick={() => uploadPhoto(x.id)}>Фото</button>
-                    <button onClick={() => deleteEmployee(x.id)}>Удалить</button>
-                  </>
-                ) : "-"}
-              </td>
+              {role !== "Employee" && <td>{x.violationCount}</td>}
+              {role !== "Employee" && <td>{x.penaltyPoints}</td>}
+              {role !== "Employee" && (
+                <td>
+                  {role === "Admin" ? (
+                    <>
+                      <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhotoByEmployee((prev) => ({ ...prev, [x.id]: e.target.files?.[0] ?? null }))} />
+                      <button onClick={() => uploadPhoto(x.id)}>Фото</button>
+                      <button onClick={() => deleteEmployee(x.id)}>Удалить</button>
+                    </>
+                  ) : "-"}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

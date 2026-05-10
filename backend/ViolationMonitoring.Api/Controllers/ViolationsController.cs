@@ -59,6 +59,42 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
         return Ok(items);
     }
 
+    [HttpGet("my-violations")]
+    public async Task<IActionResult> GetMyViolations()
+    {
+        var employeeId = await GetCurrentEmployeeIdAsync();
+        if (employeeId == 0)
+        {
+            return Unauthorized();
+        }
+
+        var items = await db.Violations
+            .Include(x => x.Employee)
+            .Include(x => x.ViolationType)
+            .Include(x => x.Inspector)
+            .Where(x => x.EmployeeId == employeeId)
+            .OrderByDescending(x => x.DateTimeUtc)
+            .Select(x => new
+            {
+                x.Id,
+                x.EmployeeId,
+                Employee = x.Employee!.FullName,
+                x.ViolationTypeId,
+                ViolationType = x.ViolationType!.Name,
+                x.Description,
+                x.Severity,
+                x.DateTimeUtc,
+                x.InspectorId,
+                Inspector = x.Inspector!.FullName,
+                x.PhotoPath,
+                x.VideoPath,
+                x.PenaltyPoints
+            })
+            .ToListAsync();
+
+        return Ok(items);
+    }
+
     [HttpPost]
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Inspector)}")]
     public async Task<IActionResult> Create([FromForm] ViolationCreateRequest request, IFormFile? photo, IFormFile? video)
@@ -186,6 +222,18 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
         {
             throw new BadHttpRequestException($"{fieldName} file extension '{ext}' is not allowed.");
         }
+    }
+
+    private async Task<int> GetCurrentEmployeeIdAsync()
+    {
+        var currentUserId = GetCurrentUserId();
+        if (currentUserId <= 0)
+        {
+            return 0;
+        }
+
+        var user = await db.Users.FindAsync(currentUserId);
+        return user?.EmployeeId ?? 0;
     }
 
     private int GetCurrentUserId()

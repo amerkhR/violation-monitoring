@@ -34,20 +34,41 @@ export function ViolationsPage() {
   const [filterTypeId, setFilterTypeId] = useState<number>(0);
   const role = localStorage.getItem("role");
 
-  const load = () =>
-    api.get("/violations", {
-      params: {
-        employeeId: filterEmployeeId || undefined,
-        violationTypeId: filterTypeId || undefined
-      }
-    }).then((res) => setRows(res.data));
+  const load = () => {
+    if (role === "Employee") {
+      // Для сотрудников получаем только их нарушения
+      api.get("/violations/my-violations").then((res) => setRows(res.data));
+    } else {
+      // Для инспекторов и админов получаем все нарушения с фильтрами
+      api.get("/violations", {
+        params: {
+          employeeId: filterEmployeeId || undefined,
+          violationTypeId: filterTypeId || undefined
+        }
+      }).then((res) => setRows(res.data));
+    }
+  };
 
   useEffect(() => {
-    api.get("/employees").then((res) => setEmployees(res.data));
-    api.get("/violation-types").then((res) => setTypes(res.data));
-  }, []);
+    if (role !== "Employee") {
+      api.get("/employees").then((res) => setEmployees(res.data));
+      api.get("/violation-types").then((res) => setTypes(res.data));
+    }
+  }, [role]);
 
-  useEffect(() => { load(); }, [filterEmployeeId, filterTypeId]);
+  useEffect(() => { load(); }, [role]);
+
+  useEffect(() => { 
+    if (role !== "Employee") {
+      load(); 
+    }
+  }, [filterEmployeeId, filterTypeId]);
+
+  useEffect(() => { 
+    if (role === "Employee") {
+      load(); 
+    }
+  }, [role]);
 
   const save = async () => {
     if (!employeeId || !violationTypeId || !description.trim()) return;
@@ -89,36 +110,40 @@ export function ViolationsPage() {
   return (
     <section>
       <h1>Нарушения</h1>
-      <div className="form-row card">
-        <select value={filterEmployeeId} onChange={(e) => setFilterEmployeeId(Number(e.target.value))}>
-          <option value={0}>Все сотрудники</option>
-          {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
-        </select>
-        <select value={filterTypeId} onChange={(e) => setFilterTypeId(Number(e.target.value))}>
-          <option value={0}>Все типы</option>
-          {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
-        </select>
-      </div>
-      <div className="form-row card">
-        <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))}>
-          <option value={0}>Сотрудник</option>
-          {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
-        </select>
-        <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))}>
-          <option value={0}>Тип нарушения</option>
-          {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
-        </select>
-        <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Описание" />
-        <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
-          <option value={1}>Low</option>
-          <option value={2}>Medium</option>
-          <option value={3}>High</option>
-        </select>
-        <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
-        <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
-        <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
-        <button onClick={save}>{editingId ? "Сохранить изменения" : "Создать нарушение"}</button>
-      </div>
+      {role !== "Employee" && (
+        <div className="form-row card">
+          <select value={filterEmployeeId} onChange={(e) => setFilterEmployeeId(Number(e.target.value))}>
+            <option value={0}>Все сотрудники</option>
+            {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
+          </select>
+          <select value={filterTypeId} onChange={(e) => setFilterTypeId(Number(e.target.value))}>
+            <option value={0}>Все типы</option>
+            {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
+          </select>
+        </div>
+      )}
+      {role !== "Employee" && (
+        <div className="form-row card">
+          <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))}>
+            <option value={0}>Сотрудник</option>
+            {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
+          </select>
+          <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))}>
+            <option value={0}>Тип нарушения</option>
+            {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
+          </select>
+          <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Описание" />
+          <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
+            <option value={1}>Low</option>
+            <option value={2}>Medium</option>
+            <option value={3}>High</option>
+          </select>
+          <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
+          <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
+          <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
+          <button onClick={save}>{editingId ? "Сохранить изменения" : "Создать нарушение"}</button>
+        </div>
+      )}
       <table>
         <thead>
           <tr>
@@ -129,28 +154,38 @@ export function ViolationsPage() {
             <th>Инспектор</th>
             <th>Баллы</th>
             <th>Медиа</th>
-            <th>Действия</th>
+            {role !== "Employee" && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
-          {rows.map((x) => (
-            <tr key={x.id}>
-              <td>{x.employee}</td>
-              <td>{x.violationType}</td>
-              <td>{x.description}</td>
-              <td>{x.severity}</td>
-              <td>{x.inspector}</td>
-              <td>{x.penaltyPoints}</td>
-              <td>
-                {x.photoPath && <a href={`http://localhost:5000${x.photoPath}`} target="_blank" rel="noreferrer">Фото</a>}
-                {x.videoPath && <> {x.photoPath ? "|" : ""} <a href={`http://localhost:5000${x.videoPath}`} target="_blank" rel="noreferrer">Видео</a></>}
-              </td>
-              <td>
-                <button onClick={() => edit(x)}>Редактировать</button>{" "}
-                {(role === "Admin" || role === "Inspector") && <button onClick={() => remove(x.id)}>Удалить</button>}
+          {rows.length === 0 && role === "Employee" ? (
+            <tr>
+              <td colSpan={role === "Employee" ? 7 : 8} style={{ textAlign: 'center', padding: '20px', fontStyle: 'italic' }}>
+                У вас нет выявленных нарушений
               </td>
             </tr>
-          ))}
+          ) : (
+            rows.map((x) => (
+              <tr key={x.id}>
+                <td>{x.employee}</td>
+                <td>{x.violationType}</td>
+                <td>{x.description}</td>
+                <td>{x.severity}</td>
+                <td>{x.inspector}</td>
+                <td>{x.penaltyPoints}</td>
+                <td>
+                  {x.photoPath && <a href={`http://localhost:5000${x.photoPath}`} target="_blank" rel="noreferrer">Фото</a>}
+                  {x.videoPath && <> {x.photoPath ? "|" : ""} <a href={`http://localhost:5000${x.videoPath}`} target="_blank" rel="noreferrer">Видео</a></>}
+                </td>
+                {role !== "Employee" && (
+                  <td>
+                    <button onClick={() => edit(x)}>Редактировать</button>{" "}
+                    {(role === "Admin" || role === "Inspector") && <button onClick={() => remove(x.id)}>Удалить</button>}
+                  </td>
+                )}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </section>
