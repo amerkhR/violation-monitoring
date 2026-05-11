@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
+import { PencilLucideIcon, TrashLucideIcon } from "../icons/tableActionIcons";
 
 type Violation = {
   id: number;
@@ -225,7 +226,7 @@ export function ViolationsPage() {
             <th>Инспектор</th>
             <th>Баллы</th>
             <th>Медиа</th>
-            {role === "Inspector" && <th>Действия</th>}
+            {role === "Inspector" && <th className="table-col-actions">Действия</th>}
           </tr>
         </thead>
         <tbody>
@@ -250,8 +251,26 @@ export function ViolationsPage() {
                 </td>
                 {role === "Inspector" && (
                   <td>
-                    <button onClick={() => edit(x)}>Редактировать</button>{" "}
-                    <button onClick={() => remove(x.id)}>Удалить</button>
+                    <div className="users-table-actions">
+                      <button
+                        type="button"
+                        className="icon-action-btn"
+                        onClick={() => edit(x)}
+                        aria-label="Редактировать нарушение"
+                        title="Редактировать"
+                      >
+                        <PencilLucideIcon />
+                      </button>
+                      <button
+                        type="button"
+                        className="icon-action-btn icon-action-btn--danger"
+                        onClick={() => remove(x.id)}
+                        aria-label="Удалить нарушение"
+                        title="Удалить"
+                      >
+                        <TrashLucideIcon />
+                      </button>
+                    </div>
                   </td>
                 )}
               </tr>
