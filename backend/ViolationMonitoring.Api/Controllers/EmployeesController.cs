@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ViolationMonitoring.Api.Contracts;
 using ViolationMonitoring.Api.Data;
 using ViolationMonitoring.Api.Domain;
+using ViolationMonitoring.Api.Services;
 
 namespace ViolationMonitoring.Api.Controllers;
 
@@ -25,9 +26,35 @@ public class EmployeesController(AppDbContext db, IWebHostEnvironment env) : Con
             query = query.Where(x => x.FullName.Contains(search));
         }
 
-        var items = await query.Select(x => new
+        var employees = await query.ToListAsync();
+
+        var duplicateTabNumbers = employees
+            .Where(e => TabNumberGenerator.IsValidFormat(e.TabNumber))
+            .GroupBy(e => e.TabNumber!)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToHashSet();
+
+        var changed = false;
+        foreach (var employee in employees)
+        {
+            if (!TabNumberGenerator.IsValidFormat(employee.TabNumber) ||
+                (employee.TabNumber is not null && duplicateTabNumbers.Contains(employee.TabNumber)))
+            {
+                employee.TabNumber = await TabNumberGenerator.GenerateUniqueAsync(db);
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            await db.SaveChangesAsync();
+        }
+
+        var items = employees.Select(x => new
         {
             x.Id,
+            x.TabNumber,
             x.FullName,
             Department = x.Department!.Name,
             x.Position,
@@ -37,7 +64,7 @@ public class EmployeesController(AppDbContext db, IWebHostEnvironment env) : Con
             PenaltyPoints = x.Violations.Sum(v => (int?)v.PenaltyPoints) ?? 0,
             x.IsActive,
             x.Role
-        }).ToListAsync();
+        }).ToList();
 
         return Ok(items);
     }
@@ -52,7 +79,8 @@ public class EmployeesController(AppDbContext db, IWebHostEnvironment env) : Con
             DepartmentId = request.DepartmentId,
             Position = request.Position,
             HireDate = request.HireDate,
-            Role = request.Role
+            Role = request.Role,
+            TabNumber = await TabNumberGenerator.GenerateUniqueAsync(db)
         };
         db.Employees.Add(entity);
         await db.SaveChangesAsync();

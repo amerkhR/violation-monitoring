@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<User>().HasIndex(x => x.Login).IsUnique();
         modelBuilder.Entity<Department>().HasIndex(x => x.Name).IsUnique();
         modelBuilder.Entity<Employee>().Property(x => x.HireDate).HasConversion<DateOnlyConverter>();
+        modelBuilder.Entity<Employee>().HasIndex(x => x.TabNumber).IsUnique();
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)
             .WithOne()

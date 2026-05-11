@@ -20,25 +20,51 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
     public async Task<IActionResult> GetAll()
     {
         var users = await db.Users
-            .Include(x => x.Employee)        
+            .Include(x => x.Employee)
             .ThenInclude(e => e.Department)
-            .Select(x => new
-            {
-                x.Id,
-                x.Login,
-                x.FullName,
-                Role = x.Role.ToString(),
-                x.IsActive,
-                Department = x.Employee == null ? null : x.Employee.Department == null ? null : x.Employee.Department.Name,
-                Position = x.Employee == null ? null : x.Employee.Position,
-                HireDate = x.Employee == null ? (DateOnly?)null : x.Employee.HireDate,
-                PhotoPath = x.Employee == null ? null : x.Employee.PhotoPath,
-                ViolationCount = x.Employee == null ? 0 : x.Employee.Violations.Count,
-                PenaltyPoints = x.Employee == null ? 0 : x.Employee.Violations.Sum(v => (int?)v.PenaltyPoints) ?? 0
-            })
             .ToListAsync();
 
-        return Ok(users);
+        var changed = false;
+        foreach (var user in users)
+        {
+            if (user.Employee is null) continue;
+            changed |= await TabNumberGenerator.EnsureEmployeeTabNumberAsync(db, user.Employee);
+        }
+
+        if (changed)
+        {
+            await db.SaveChangesAsync();
+        }
+
+        var result = new List<object>();
+        foreach (var user in users)
+        {
+            var violationCount = 0;
+            var penaltyPoints = 0;
+            if (user.EmployeeId != null)
+            {
+                violationCount = await db.Violations.CountAsync(x => x.EmployeeId == user.EmployeeId);
+                penaltyPoints = await db.Violations.Where(x => x.EmployeeId == user.EmployeeId).SumAsync(x => (int?)x.PenaltyPoints) ?? 0;
+            }
+
+            result.Add(new
+            {
+                user.Id,
+                user.Login,
+                user.FullName,
+                Role = user.Role.ToString(),
+                user.IsActive,
+                Department = user.Employee == null || user.Employee.Department == null ? null : user.Employee.Department.Name,
+                Position = user.Employee?.Position,
+                HireDate = user.Employee == null ? (DateOnly?)null : user.Employee.HireDate,
+                PhotoPath = user.Employee?.PhotoPath,
+                TabNumber = user.Employee?.TabNumber,
+                ViolationCount = violationCount,
+                PenaltyPoints = penaltyPoints
+            });
+        }
+
+        return Ok(result);
     }
 
     [HttpGet("me")]
@@ -68,6 +94,15 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
             penaltyPoints = await db.Violations.Where(x => x.EmployeeId == user.EmployeeId).SumAsync(x => (int?)x.PenaltyPoints) ?? 0;
         }
 
+        if (user.Employee is not null)
+        {
+            var changed = await TabNumberGenerator.EnsureEmployeeTabNumberAsync(db, user.Employee);
+            if (changed)
+            {
+                await db.SaveChangesAsync();
+            }
+        }
+
         return Ok(new
         {
             user.Id,
@@ -79,6 +114,7 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
             Position = user.Employee?.Position,
             HireDate = user.Employee?.HireDate,
             PhotoPath = user.Employee?.PhotoPath,
+            TabNumber = user.Employee?.TabNumber,
             ViolationCount = violationCount,
             PenaltyPoints = penaltyPoints
         });
@@ -111,7 +147,8 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
                 Position = request.Position,
                 HireDate = request.HireDate,
                 Role = request.Role == UserRole.Inspector ? EmployeeRole.Inspector : EmployeeRole.Employee,
-                IsActive = request.IsActive
+                IsActive = request.IsActive,
+                TabNumber = await TabNumberGenerator.GenerateUniqueAsync(db)
             };
             db.Employees.Add(employee);
             await db.SaveChangesAsync();
@@ -152,7 +189,8 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
                     Position = request.Position,
                     HireDate = request.HireDate,
                     Role = request.Role == UserRole.Inspector ? EmployeeRole.Inspector : EmployeeRole.Employee,
-                    IsActive = request.IsActive
+                    IsActive = request.IsActive,
+                    TabNumber = await TabNumberGenerator.GenerateUniqueAsync(db)
                 };
                 db.Employees.Add(employee);
                 await db.SaveChangesAsync();

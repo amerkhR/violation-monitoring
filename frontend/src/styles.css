@@ -182,10 +182,64 @@ body, html, #root {
 }
 
 .modal-card {
+  position: relative;
   width: min(600px, 100%);
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #33425f;
+  background: #131a27;
+  color: #e9eef5;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  padding: 0;
+}
+
+.modal-close-button:hover {
+  background: #1a2130;
+}
+
+.modal-textarea {
+  width: min(100%, 350px);
+  min-height: 72px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid #33425f;
+  background: #131a27;
+  color: #e9eef5;
+  resize: vertical;
+}
+
+.modal-textarea:focus {
+  outline: none;
+  border-color: #5c7dff;
+}
+
+.modal-textarea-full {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid #33425f;
+  background: #131a27;
+  color: #e9eef5;
+  resize: vertical;
+}
+
+.modal-textarea-full:focus {
+  outline: none;
+  border-color: #5c7dff;
 }
 
 .modal-grid {
@@ -208,14 +262,26 @@ body, html, #root {
   justify-content: center;
 }
 
+.photo-preview {
+  justify-content: flex-start;
+}
+
 .photo-preview img {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 130px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 14px;
   border: 1px solid #33425f;
 }
 
+.layout.dark-mode .recharts-cartesian-axis-tick text {
+  fill: #e9eef5 !important;
+}
+
+.layout.dark-mode .recharts-cartesian-axis-line,
+.layout.dark-mode .recharts-cartesian-axis-tick line {
+  stroke: #44506a;
+}
 
 .password-field {
   position: relative;

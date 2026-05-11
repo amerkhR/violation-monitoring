@@ -9,8 +9,20 @@
       "PackagePath": "staticwebassets/uploads/employee-photos/1df732335f624cb6adf8bb6d44a33973.jpg"
     },
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/3ebde0d0b91940418f11521db6540ae4.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/3ebde0d0b91940418f11521db6540ae4.jpg"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/a9b1e344f5bc47f5adf6c1f5ae523a00.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/a9b1e344f5bc47f5adf6c1f5ae523a00.jpg"
+    },
+    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg",
       "PackagePath": "staticwebassets/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg"
     },
     {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/dc503ac11b704427a40245bd41631d37.jpg",
@@ -23,6 +35,22 @@
     {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/f3274064ab5647f3940fb856307ae3f5.jpg",
       "PackagePath": "staticwebassets/uploads/employee-photos/f3274064ab5647f3940fb856307ae3f5.jpg"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/2ff786671d2947f9af39004e751ebcd8.png",
+      "PackagePath": "staticwebassets/uploads/images/2ff786671d2947f9af39004e751ebcd8.png"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/32055ae656c14fceb2bbf33a5ccb7432.png",
+      "PackagePath": "staticwebassets/uploads/images/32055ae656c14fceb2bbf33a5ccb7432.png"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/beef392142e947da9fb944782f917f3c.png",
+      "PackagePath": "staticwebassets/uploads/images/beef392142e947da9fb944782f917f3c.png"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/ca3766dfacd5404498e5938f4fca66d1.png",
+      "PackagePath": "staticwebassets/uploads/images/ca3766dfacd5404498e5938f4fca66d1.png"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ViolationMonitoring.Api.Microsoft.AspNetCore.StaticWebAssets.props",

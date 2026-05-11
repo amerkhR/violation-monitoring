@@ -7,6 +7,7 @@ type Profile = {
   fullName: string;
   role: string;
   isActive: boolean;
+  tabNumber?: string | null;
   department: string | null;
   position: string | null;
   hireDate: string | null;
@@ -40,6 +41,7 @@ export function ProfilePage() {
   }
 
   const avatarUrl = profile.photoPath ? `${API_ORIGIN}${profile.photoPath}` : undefined;
+  const tabNumber = profile.tabNumber ?? (profile as any).TabNumber ?? null;
 
   return (
     <div className="profile-card">
@@ -75,6 +77,12 @@ export function ProfilePage() {
           <div className="profile-field">
             <span>Дата приёма</span>
             <strong>{profile.hireDate ? profile.hireDate.split("T")[0] : "—"}</strong>
+          </div>
+        )}
+        {profile.role !== "Admin" && (
+          <div className="profile-field">
+            <span>Табельный номер</span>
+            <strong>{tabNumber ?? "—"}</strong>
           </div>
         )}
         {profile.role !== "Admin" && (

@@ -42,6 +42,8 @@ public class Department
 public class Employee
 {
     public int Id { get; set; }
+    // Табельный номер (5 цифр). Генерируется автоматически и должен быть уникальным.
+    public string? TabNumber { get; set; }
     public string FullName { get; set; } = string.Empty;
     public int DepartmentId { get; set; }
     public Department? Department { get; set; }

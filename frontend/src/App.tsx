@@ -81,7 +81,8 @@ export function App() {
     <div className={`layout ${isDarkMode ? "dark-mode" : "light-mode"}`}>
       <aside className="sidebar">
         <h2>Monitoring</h2>
-        <div className="panel-label">{role === "Admin" ? "Панель администратора" : "Панель инспектора"}</div>
+        {role === "Admin" && <div className="panel-label">Панель администратора</div>}
+        {role === "Inspector" && <div className="panel-label">Панель инспектора</div>}
         <nav>
           <Link to="/">Дашборд</Link>
           {role !== "Admin" && <Link to="/employees">Сотрудники</Link>}

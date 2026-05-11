@@ -7,6 +7,7 @@ type UserRow = {
   fullName: string;
   role: string;
   isActive: boolean;
+  tabNumber?: string | null;
   department: string | null;
   position: string | null;
   hireDate: string | null;
@@ -323,13 +324,13 @@ export function UsersPage() {
           <tr>
             <th>Логин</th>
             <th>ФИО</th>
+            <th>Табельный номер</th>
             <th>Роль</th>
             <th>Отдел</th>
             <th>Должность</th>
             <th>Дата приёма</th>
             <th>Нарушения</th>
             <th>Штрафные баллы</th>
-            <th>Активен</th>
             <th>Действия</th>
           </tr>
         </thead>
@@ -338,13 +339,13 @@ export function UsersPage() {
             <tr key={x.id}>
               <td>{x.login}</td>
               <td>{x.fullName}</td>
+              <td>{x.tabNumber ?? (x as any).TabNumber ?? ""}</td>
               <td>{x.role}</td>
               <td>{x.department}</td>
               <td>{x.position}</td>
               <td>{x.hireDate ? x.hireDate.split("T")[0] : ""}</td>
               <td>{x.violationCount}</td>
               <td>{x.penaltyPoints}</td>
-              <td>{x.isActive ? "Да" : "Нет"}</td>
               <td>
                 <button onClick={() => edit(x)}>Редактировать</button>
                 <button onClick={() => remove(x.id)}>Удалить</button>

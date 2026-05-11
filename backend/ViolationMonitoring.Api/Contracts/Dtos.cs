@@ -37,13 +37,13 @@ public record ReportCreateRequest(string Type, string ParamsJson);
 public record ViolationCreateRequest(
     int EmployeeId,
     int ViolationTypeId,
-    string Description,
     SeverityLevel Severity,
-    DateTime DateTimeUtc);
+    DateTime DateTimeUtc,
+    string? Description = null);
 
 public record ViolationUpdateRequest(
     int EmployeeId,
     int ViolationTypeId,
-    string Description,
     SeverityLevel Severity,
-    DateTime DateTimeUtc);
+    DateTime DateTimeUtc,
+    string? Description = null);

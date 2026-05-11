@@ -99,81 +99,103 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Inspector)}")]
     public async Task<IActionResult> Create([FromForm] ViolationCreateRequest request, IFormFile? photo, IFormFile? video)
     {
-        var type = await db.ViolationTypes.FirstOrDefaultAsync(x => x.Id == request.ViolationTypeId && x.IsActive);
-        if (type is null) return BadRequest("Violation type not found.");
-
-        var inspectorId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-        if (inspectorId <= 0) return Unauthorized();
-
-        string? photoPath = null;
-        string? videoPath = null;
-
-        if (photo is not null)
+        try
         {
-            ValidateFile(photo, AllowedImageExtensions, MaxImageSizeBytes, "photo");
-            photoPath = await SaveFile(photo, "images");
+            var type = await db.ViolationTypes.FirstOrDefaultAsync(x => x.Id == request.ViolationTypeId && x.IsActive);
+            if (type is null) return BadRequest("Violation type not found.");
+
+            var inspectorId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
+            if (inspectorId <= 0) return Unauthorized();
+
+            string? photoPath = null;
+            string? videoPath = null;
+
+            if (photo is not null)
+            {
+                ValidateFile(photo, AllowedImageExtensions, MaxImageSizeBytes, "photo");
+                photoPath = await SaveFile(photo, "images");
+            }
+
+            if (video is not null)
+            {
+                ValidateFile(video, AllowedVideoExtensions, MaxVideoSizeBytes, "video");
+                videoPath = await SaveFile(video, "videos");
+            }
+
+            var points = scoringService.CalculatePoints(type, request.Severity);
+            var entity = new Violation
+            {
+                EmployeeId = request.EmployeeId,
+                ViolationTypeId = request.ViolationTypeId,
+                Description = request.Description ?? string.Empty,
+                Severity = request.Severity,
+                DateTimeUtc = request.DateTimeUtc,
+                InspectorId = inspectorId,
+                PhotoPath = photoPath,
+                VideoPath = videoPath,
+                PenaltyPoints = points
+            };
+            db.Violations.Add(entity);
+            await db.SaveChangesAsync();
+            return Ok(entity);
         }
-
-        if (video is not null)
+        catch (BadHttpRequestException ex)
         {
-            ValidateFile(video, AllowedVideoExtensions, MaxVideoSizeBytes, "video");
-            videoPath = await SaveFile(video, "videos");
+            return BadRequest(ex.Message);
         }
-
-        var points = scoringService.CalculatePoints(type, request.Severity);
-        var entity = new Violation
+        catch (Exception ex)
         {
-            EmployeeId = request.EmployeeId,
-            ViolationTypeId = request.ViolationTypeId,
-            Description = request.Description,
-            Severity = request.Severity,
-            DateTimeUtc = request.DateTimeUtc,
-            InspectorId = inspectorId,
-            PhotoPath = photoPath,
-            VideoPath = videoPath,
-            PenaltyPoints = points
-        };
-        db.Violations.Add(entity);
-        await db.SaveChangesAsync();
-        return Ok(entity);
+            return StatusCode(500, $"Error creating violation: {ex.Message}");
+        }
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Inspector)}")]
     public async Task<IActionResult> Update(int id, [FromForm] ViolationUpdateRequest request, IFormFile? photo, IFormFile? video)
     {
-        var entity = await db.Violations.FindAsync(id);
-        if (entity is null) return NotFound();
-
-        var inspectorId = GetCurrentUserId();
-        if (inspectorId <= 0) return Unauthorized();
-        var isAdmin = User.IsInRole(nameof(UserRole.Admin));
-        if (!isAdmin && entity.InspectorId != inspectorId) return Forbid();
-
-        var type = await db.ViolationTypes.FirstOrDefaultAsync(x => x.Id == request.ViolationTypeId && x.IsActive);
-        if (type is null) return BadRequest("Violation type not found.");
-
-        entity.EmployeeId = request.EmployeeId;
-        entity.ViolationTypeId = request.ViolationTypeId;
-        entity.Description = request.Description;
-        entity.Severity = request.Severity;
-        entity.DateTimeUtc = request.DateTimeUtc;
-        entity.PenaltyPoints = scoringService.CalculatePoints(type, request.Severity);
-
-        if (photo is not null)
+        try
         {
-            ValidateFile(photo, AllowedImageExtensions, MaxImageSizeBytes, "photo");
-            entity.PhotoPath = await SaveFile(photo, "images");
-        }
+            var entity = await db.Violations.FindAsync(id);
+            if (entity is null) return NotFound();
 
-        if (video is not null)
+            var inspectorId = GetCurrentUserId();
+            if (inspectorId <= 0) return Unauthorized();
+            var isAdmin = User.IsInRole(nameof(UserRole.Admin));
+            if (!isAdmin && entity.InspectorId != inspectorId) return Forbid();
+
+            var type = await db.ViolationTypes.FirstOrDefaultAsync(x => x.Id == request.ViolationTypeId && x.IsActive);
+            if (type is null) return BadRequest("Violation type not found.");
+
+            entity.EmployeeId = request.EmployeeId;
+            entity.ViolationTypeId = request.ViolationTypeId;
+            entity.Description = request.Description ?? string.Empty;
+            entity.Severity = request.Severity;
+            entity.DateTimeUtc = request.DateTimeUtc;
+            entity.PenaltyPoints = scoringService.CalculatePoints(type, request.Severity);
+
+            if (photo is not null)
+            {
+                ValidateFile(photo, AllowedImageExtensions, MaxImageSizeBytes, "photo");
+                entity.PhotoPath = await SaveFile(photo, "images");
+            }
+
+            if (video is not null)
+            {
+                ValidateFile(video, AllowedVideoExtensions, MaxVideoSizeBytes, "video");
+                entity.VideoPath = await SaveFile(video, "videos");
+            }
+
+            await db.SaveChangesAsync();
+            return NoContent();
+        }
+        catch (BadHttpRequestException ex)
         {
-            ValidateFile(video, AllowedVideoExtensions, MaxVideoSizeBytes, "video");
-            entity.VideoPath = await SaveFile(video, "videos");
+            return BadRequest(ex.Message);
         }
-
-        await db.SaveChangesAsync();
-        return NoContent();
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error updating violation: {ex.Message}");
+        }
     }
 
     [HttpDelete("{id:int}")]

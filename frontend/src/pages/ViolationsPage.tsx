@@ -29,6 +29,7 @@ export function ViolationsPage() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [filterEmployeeId, setFilterEmployeeId] = useState<number>(0);
   const [filterTypeId, setFilterTypeId] = useState<number>(0);
@@ -70,27 +71,53 @@ export function ViolationsPage() {
     }
   }, [role]);
 
-  const save = async () => {
-    if (!employeeId || !violationTypeId || !description.trim()) return;
-    const form = new FormData();
-    form.append("employeeId", String(employeeId));
-    form.append("violationTypeId", String(violationTypeId));
-    form.append("description", description);
-    form.append("severity", String(severity));
-    form.append("dateTimeUtc", new Date(dateTimeUtc).toISOString());
-    if (photo) form.append("photo", photo);
-    if (video) form.append("video", video);
-
-    if (editingId) {
-      await api.put(`/violations/${editingId}`, form, { headers: { "Content-Type": "multipart/form-data" } });
-    } else {
-      await api.post("/violations", form, { headers: { "Content-Type": "multipart/form-data" } });
-    }
-    setEditingId(null);
+  const resetForm = () => {
+    setEmployeeId(0);
+    setViolationTypeId(0);
     setDescription("");
+    setSeverity(2);
+    setDateTimeUtc(new Date().toISOString().slice(0, 16));
     setPhoto(null);
     setVideo(null);
-    await load();
+    setEditingId(null);
+  };
+
+  const openCreateModal = () => {
+    resetForm();
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const save = async () => {
+    if (!employeeId || !violationTypeId) return;
+    try {
+      const form = new FormData();
+      form.append("employeeId", String(employeeId));
+      form.append("violationTypeId", String(violationTypeId));
+      form.append("severity", String(severity));
+      form.append("dateTimeUtc", new Date(dateTimeUtc).toISOString());
+      form.append("description", description || "");
+      if (photo) form.append("photo", photo);
+      if (video) form.append("video", video);
+
+      if (editingId) {
+        await api.put(`/violations/${editingId}`, form, { headers: { "Content-Type": "multipart/form-data" } });
+      } else {
+        await api.post("/violations", form, { headers: { "Content-Type": "multipart/form-data" } });
+      }
+      setEditingId(null);
+      setDescription("");
+      setPhoto(null);
+      setVideo(null);
+      await load();
+      closeModal();
+    } catch (error) {
+      console.error("Error creating violation:", error);
+      alert("Ошибка при создании нарушения");
+    }
   };
 
   const edit = (row: Violation) => {
@@ -100,6 +127,7 @@ export function ViolationsPage() {
     setDescription(row.description);
     setSeverity(row.severity);
     setDateTimeUtc(new Date(row.dateTimeUtc).toISOString().slice(0, 16));
+    setIsModalOpen(true);
   };
 
   const remove = async (id: number) => {
@@ -122,26 +150,69 @@ export function ViolationsPage() {
           </select>
         </div>
       )}
-      {role !== "Employee" && (
-        <div className="form-row card">
-          <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))}>
-            <option value={0}>Сотрудник</option>
-            {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
-          </select>
-          <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))}>
-            <option value={0}>Тип нарушения</option>
-            {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
-          </select>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Описание" />
-          <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
-            <option value={1}>Low</option>
-            <option value={2}>Medium</option>
-            <option value={3}>High</option>
-          </select>
-          <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
-          <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
-          <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
-          <button onClick={save}>{editingId ? "Сохранить изменения" : "Создать нарушение"}</button>
+      {role === "Inspector" && (
+        <div className="form-row card" style={{ gap: '10px' }}>
+          <button onClick={openCreateModal}>Создать нарушение</button>
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-card card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-grid">
+              <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))} aria-label="Сотрудник">
+                <option value={0}>Выберите сотрудника</option>
+                {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
+              </select>
+              <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))} aria-label="Тип нарушения">
+                <option value={0}>Тип нарушения</option>
+                {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
+              </select>
+              <textarea
+                className="modal-textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                placeholder="Описание"
+                aria-label="Описание"
+              />
+              <div className="modal-row">
+                <label>
+                  Серьезность
+                  <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
+                    <option value={1}>Low</option>
+                    <option value={2}>Medium</option>
+                    <option value={3}>High</option>
+                  </select>
+                </label>
+                <label>
+                  Время фиксации
+                  <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
+                </label>
+              </div>
+              <label>
+                Фото
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
+                  {photo && (
+                    <div style={{ marginLeft: '10px' }}>
+                      <img src={URL.createObjectURL(photo)} alt="Photo" style={{ width: '100px', height: '120px', objectFit: 'cover', borderRadius: '8px' }} />
+                    </div>
+                  )}
+                </div>
+              </label>
+              <label>
+                Видео
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
+                  {video && <span style={{ fontSize: '1.2rem', color: '#4caf50' }}>✓</span>}
+                </div>
+              </label>
+              <div className="modal-row" style={{ justifyContent: 'flex-end' }}>
+                <button onClick={closeModal} type="button">Отмена</button>
+                <button onClick={save} type="button">{editingId ? 'Сохранить' : 'Создать'}</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
       <table>
@@ -154,7 +225,7 @@ export function ViolationsPage() {
             <th>Инспектор</th>
             <th>Баллы</th>
             <th>Медиа</th>
-            {role !== "Employee" && <th>Действия</th>}
+            {role === "Inspector" && <th>Действия</th>}
           </tr>
         </thead>
         <tbody>
@@ -177,10 +248,10 @@ export function ViolationsPage() {
                   {x.photoPath && <a href={`http://localhost:5000${x.photoPath}`} target="_blank" rel="noreferrer">Фото</a>}
                   {x.videoPath && <> {x.photoPath ? "|" : ""} <a href={`http://localhost:5000${x.videoPath}`} target="_blank" rel="noreferrer">Видео</a></>}
                 </td>
-                {role !== "Employee" && (
+                {role === "Inspector" && (
                   <td>
                     <button onClick={() => edit(x)}>Редактировать</button>{" "}
-                    {(role === "Admin" || role === "Inspector") && <button onClick={() => remove(x.id)}>Удалить</button>}
+                    <button onClick={() => remove(x.id)}>Удалить</button>
                   </td>
                 )}
               </tr>

@@ -31,6 +31,7 @@ export function DashboardPage() {
   const [byDep, setByDep] = useState<{ department: string; count: number }[]>([]);
   const [topEmployees, setTopEmployees] = useState<{ employee: string; violations: number; points: number }[]>([]);
   const [userStats, setUserStats] = useState<{ violations: number; penaltyPoints: number } | null>({ violations: 0, penaltyPoints: 0 });
+  const [activeDepIndex, setActiveDepIndex] = useState<number>(-1);
 
   const role = localStorage.getItem("role");
   const isEmployee = role === "Employee";
@@ -146,10 +147,22 @@ export function DashboardPage() {
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={byDep}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="department" tick={{ fill: '#000' }} />
+                    <XAxis dataKey="department" />
                     <YAxis />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="count" fill="#46a6ff" name="кол-во" />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                    <Bar
+                      dataKey="count"
+                      name="кол-во"
+                      onMouseLeave={() => setActiveDepIndex(-1)}
+                      onMouseEnter={(_, index) => setActiveDepIndex(index)}
+                    >
+                      {byDep.map((_, index) => (
+                        <Cell
+                          key={`dep-cell-${index}`}
+                          fill={activeDepIndex === index ? '#2a82d1' : '#46a6ff'}
+                        />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
