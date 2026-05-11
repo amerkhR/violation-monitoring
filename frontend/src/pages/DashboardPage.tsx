@@ -7,16 +7,16 @@ const CustomTooltip = (props: any) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        background: '#fff',
-        padding: '8px 12px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        color: '#000'
+        background: "var(--tooltip-bg)",
+        padding: "8px 12px",
+        border: "1px solid var(--tooltip-border)",
+        borderRadius: "4px",
+        color: "var(--tooltip-fg)",
       }}>
-        <p style={{ margin: 0, color: '#000', fontWeight: 'bold' }}>
+        <p style={{ margin: 0, color: "var(--tooltip-fg)", fontWeight: "bold" }}>
           {payload[0].payload.department}
         </p>
-        <p style={{ margin: '4px 0 0 0', color: '#000' }}>
+        <p style={{ margin: "4px 0 0 0", color: "var(--tooltip-fg)" }}>
           {payload[0].name}: {payload[0].value}
         </p>
       </div>
@@ -90,14 +90,14 @@ export function DashboardPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div style={{ textAlign: 'center', padding: '40px', color: '#666', background: '#f9f9f9', border: '2px dashed #ddd', borderRadius: '8px' }}>
+                  <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
                     📊 Данные отсутствуют
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="card" style={{ textAlign: 'center', padding: '60px 20px', fontSize: '1.4rem', color: '#666', background: '#f9f9f9', border: '2px dashed #ddd' }}>
+            <div className="card" style={{ textAlign: "center", padding: "60px 20px", fontSize: "1.4rem", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)" }}>
               🎉 У вас пока нет выявленных нарушений
             </div>
           )}
@@ -136,7 +136,7 @@ export function DashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#666', background: '#f9f9f9', border: '2px dashed #ddd', borderRadius: '8px' }}>
+                <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
                   📊 Данные отсутствуют
                 </div>
               )}
@@ -166,7 +166,7 @@ export function DashboardPage() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#666', background: '#f9f9f9', border: '2px dashed #ddd', borderRadius: '8px' }}>
+                <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
                   📊 Данные отсутствуют
                 </div>
               )}
@@ -194,7 +194,7 @@ export function DashboardPage() {
                 </tbody>
               </table>
             ) : (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#666', background: '#f9f9f9', border: '2px dashed #ddd', borderRadius: '8px' }}>
+              <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
                 👥 Данные отсутствуют
               </div>
             )}

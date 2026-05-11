@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import { PencilLucideIcon, TrashLucideIcon } from "../icons/tableActionIcons";
+import { EyeClosedLucideIcon, EyeLucideIcon, PencilLucideIcon, TrashLucideIcon } from "../icons/tableActionIcons";
 
 type UserRow = {
   id: number;
@@ -230,17 +230,24 @@ export function UsersPage() {
 
   return (
     <section>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h1>Администрирование пользователей</h1>
-        <button onClick={openCreateModal}>Создать пользователя</button>
+      <div className="users-page-toolbar">
+        <h1 className="users-page-title">
+          <span className="users-page-title-line1">Администрирование</span>
+          <span className="users-page-title-line2">пользователей</span>
+        </h1>
+        <button type="button" className="users-create-btn" onClick={openCreateModal}>
+          Создать пользователя
+        </button>
       </div>
 
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-card card" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h2>{isEditing ? "Редактирование пользователя" : "Новый пользователь"}</h2>
-              <button onClick={closeModal}>✕</button>
+            <div className="users-modal-header">
+              <h2 className="users-modal-title">{isEditing ? "Редактирование пользователя" : "Новый пользователь"}</h2>
+              <button type="button" className="users-modal-close" onClick={closeModal} aria-label="Закрыть">
+                ✕
+              </button>
             </div>
             <div className="modal-grid">
               <div className="modal-row">
@@ -287,7 +294,14 @@ export function UsersPage() {
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
                     placeholder={isEditing ? "Новый пароль" : "Пароль"}
                   />
-                  <button type="button" onClick={() => setShowPassword((prev) => !prev)}>{showPassword ? "🙈" : "👁️"}</button>
+                  <button
+                    type="button"
+                    className="password-field-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                  >
+                    {showPassword ? <EyeClosedLucideIcon size={20} /> : <EyeLucideIcon size={20} />}
+                  </button>
                 </label>
                 <label className="password-field">
                   <input
@@ -296,7 +310,14 @@ export function UsersPage() {
                     onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                     placeholder="Повторите пароль"
                   />
-                  <button type="button" onClick={() => setShowPassword((prev) => !prev)}>{showPassword ? "🙈" : "👁️"}</button>
+                  <button
+                    type="button"
+                    className="password-field-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                  >
+                    {showPassword ? <EyeClosedLucideIcon size={20} /> : <EyeLucideIcon size={20} />}
+                  </button>
                 </label>
               </div>
               <div className="modal-row">
@@ -305,16 +326,14 @@ export function UsersPage() {
                   <input type="date" value={form.hireDate} onChange={(e) => setForm({ ...form, hireDate: e.target.value })} />
                 </label>
               </div>
-              <div className="modal-row">
-                <label style={{ display: "flex", alignItems: "center" }}>
-                  <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />
-                  <span style={{ marginLeft: 8 }}>Активен</span>
-                </label>
-              </div>
             </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 10 }}>
-              <button onClick={closeModal}>Отмена</button>
-              <button onClick={save}>{isEditing ? "Сохранить" : "Создать"}</button>
+            <div className="users-modal-footer">
+              <button type="button" onClick={closeModal}>
+                Отмена
+              </button>
+              <button type="button" className="users-modal-submit-btn" onClick={save}>
+                {isEditing ? "Сохранить" : "Создать"}
+              </button>
             </div>
           </div>
         </div>
