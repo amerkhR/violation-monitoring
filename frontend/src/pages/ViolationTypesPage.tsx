@@ -117,6 +117,7 @@ export function ViolationTypesPage() {
         </select>
         <button onClick={createType}>Добавить тип</button>
       </div>
+      <div className="card table-sheet">
       <table>
         <thead>
           <tr>
@@ -219,6 +220,7 @@ export function ViolationTypesPage() {
           })}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

@@ -320,6 +320,7 @@ export function UsersPage() {
         </div>
       )}
 
+      <div className="card table-sheet">
       <table>
         <thead>
           <tr>
@@ -373,6 +374,7 @@ export function UsersPage() {
           ))}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

@@ -215,11 +215,31 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
     [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await db.Users.FindAsync(id);
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user is null) return NotFound();
+
+        var employeeId = user.EmployeeId;
+
+        var violationsToRemove = await db.Violations
+            .Where(v =>
+                v.InspectorId == user.Id ||
+                (employeeId != null && v.EmployeeId == employeeId.Value))
+            .ToListAsync();
+        db.Violations.RemoveRange(violationsToRemove);
 
         db.Users.Remove(user);
         await db.SaveChangesAsync();
+
+        if (employeeId is int eid)
+        {
+            var employee = await db.Employees.FindAsync(eid);
+            if (employee is not null)
+            {
+                db.Employees.Remove(employee);
+                await db.SaveChangesAsync();
+            }
+        }
+
         return NoContent();
     }
 

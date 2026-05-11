@@ -20,10 +20,19 @@ export function EmployeesPage() {
   const [hireDate, setHireDate] = useState("2024-01-01");
   const [photoByEmployee, setPhotoByEmployee] = useState<Record<number, File | null>>({});
 
-  const load = () => api.get("/employees", { params: { search: search || undefined } }).then((res) => setRows(res.data));
+  const role = localStorage.getItem("role");
+
+  const load = () =>
+    api
+      .get("/employees", {
+        params: {
+          search: search || undefined,
+          ...(role === "Admin" ? { includeUnlinked: true } : {}),
+        },
+      })
+      .then((res) => setRows(res.data));
   useEffect(() => { load(); }, []);
   useEffect(() => { load(); }, [search]);
-  const role = localStorage.getItem("role");
 
   const createEmployee = async () => {
     await api.post("/employees", {
@@ -64,6 +73,7 @@ export function EmployeesPage() {
         <input type="date" value={hireDate} onChange={(e) => setHireDate(e.target.value)} />
         <button onClick={createEmployee}>Добавить сотрудника</button>
       </div>}
+      <div className="card table-sheet">
       <table>
         <thead>
           <tr>
@@ -88,6 +98,7 @@ export function EmployeesPage() {
           ))}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

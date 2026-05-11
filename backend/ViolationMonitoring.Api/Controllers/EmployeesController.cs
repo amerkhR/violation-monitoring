@@ -14,12 +14,20 @@ namespace ViolationMonitoring.Api.Controllers;
 public class EmployeesController(AppDbContext db, IWebHostEnvironment env) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? search)
+    public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] bool includeUnlinked = false)
     {
         var query = db.Employees
             .Include(x => x.Department)
             .Include(x => x.Violations)
             .AsQueryable();
+
+        // В списках по умолчанию только сотрудники с учётной записью (нет «хвостов» после удаления User).
+        // Админ может запросить ?includeUnlinked=true на странице «Сотрудники», чтобы видеть добавленных только как Employee.
+        var showUnlinked = User.IsInRole(nameof(UserRole.Admin)) && includeUnlinked;
+        if (!showUnlinked)
+        {
+            query = query.Where(e => db.Users.Any(u => u.EmployeeId == e.Id));
+        }
 
         if (!string.IsNullOrWhiteSpace(search))
         {

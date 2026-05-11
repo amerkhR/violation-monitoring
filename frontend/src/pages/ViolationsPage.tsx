@@ -53,7 +53,13 @@ export function ViolationsPage() {
 
   useEffect(() => {
     if (role !== "Employee") {
-      api.get("/employees").then((res) => setEmployees(res.data));
+      api.get("/employees").then((res) => {
+        setEmployees(res.data);
+        setFilterEmployeeId((prev) => {
+          if (prev === 0) return 0;
+          return res.data.some((e: { id: number }) => e.id === prev) ? prev : 0;
+        });
+      });
       api.get("/violation-types").then((res) => setTypes(res.data));
     }
   }, [role]);
@@ -71,6 +77,10 @@ export function ViolationsPage() {
       load(); 
     }
   }, [role]);
+
+  useEffect(() => {
+    setEmployeeId((prev) => (prev !== 0 && !employees.some((e) => e.id === prev) ? 0 : prev));
+  }, [employees]);
 
   const resetForm = () => {
     setEmployeeId(0);
@@ -216,6 +226,7 @@ export function ViolationsPage() {
           </div>
         </div>
       )}
+      <div className="card table-sheet">
       <table>
         <thead>
           <tr>
@@ -278,6 +289,7 @@ export function ViolationsPage() {
           )}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }
