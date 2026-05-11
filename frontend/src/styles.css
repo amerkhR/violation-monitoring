@@ -407,6 +407,55 @@ select {
   transform: scale(0.92) rotate(20deg);
 }
 
+/* Users table: icon actions (Lucide-style) */
+.users-table-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #33425f;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e9eef5;
+  flex-shrink: 0;
+}
+
+.icon-action-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #4a5a7a;
+}
+
+.icon-action-btn--danger:hover {
+  border-color: #c45c5c;
+  color: #ff9b9b;
+  background: rgba(196, 92, 92, 0.12);
+}
+
+.layout.light-mode .icon-action-btn {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-color: #d2d2d7;
+}
+
+.layout.light-mode .icon-action-btn:hover {
+  background: #ffffff;
+  border-color: #0071e3;
+}
+
+.layout.light-mode .icon-action-btn--danger:hover {
+  border-color: #c45c5c;
+  color: #b42318;
+  background: #fff0f0;
+}
+
 /* Spin animation for theme toggle */
 @keyframes spin {
   from {
