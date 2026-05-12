@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ViolationMonitoring.Api.Domain;
 
 namespace ViolationMonitoring.Api.Contracts;
@@ -32,18 +33,25 @@ public record UserUpdateRequest(
     DateOnly HireDate);
 
 public record UserPasswordUpdateRequest(string CurrentPassword, string NewPassword);
-public record ReportCreateRequest(string Type, string ParamsJson);
+
+public enum ReportPeriod
+{
+    Daily,
+    Monthly,
+    Quarterly,
+    Yearly
+}
+
+public record ReportCreateRequest([property: JsonPropertyName("period")] ReportPeriod Period);
 
 public record ViolationCreateRequest(
     int EmployeeId,
     int ViolationTypeId,
-    SeverityLevel Severity,
     DateTime DateTimeUtc,
     string? Description = null);
 
 public record ViolationUpdateRequest(
     int EmployeeId,
     int ViolationTypeId,
-    SeverityLevel Severity,
     DateTime DateTimeUtc,
     string? Description = null);

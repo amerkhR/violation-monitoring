@@ -72,7 +72,6 @@ public class Violation
     public int ViolationTypeId { get; set; }
     public ViolationType? ViolationType { get; set; }
     public string Description { get; set; } = string.Empty;
-    public SeverityLevel Severity { get; set; }
     public DateTime DateTimeUtc { get; set; } = DateTime.UtcNow;
     public int InspectorId { get; set; }
     public User? Inspector { get; set; }
@@ -88,4 +87,6 @@ public class Report
     public string ParamsJson { get; set; } = "{}";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public int CreatedBy { get; set; }
+    /// <summary>Путь к PDF относительно wwwroot, например /uploads/reports/....pdf</summary>
+    public string? PdfPath { get; set; }
 }

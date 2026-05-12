@@ -242,7 +242,7 @@ export function UsersPage() {
 
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-card card" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-card card users-user-modal" onClick={(e) => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2 className="users-modal-title">{isEditing ? "Редактирование пользователя" : "Новый пользователь"}</h2>
               <button type="button" className="users-modal-close" onClick={closeModal} aria-label="Закрыть">
@@ -300,7 +300,7 @@ export function UsersPage() {
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                   >
-                    {showPassword ? <EyeClosedLucideIcon size={20} /> : <EyeLucideIcon size={20} />}
+                    {showPassword ? <EyeClosedLucideIcon size={16} /> : <EyeLucideIcon size={16} />}
                   </button>
                 </label>
                 <label className="password-field">
@@ -316,7 +316,7 @@ export function UsersPage() {
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                   >
-                    {showPassword ? <EyeClosedLucideIcon size={20} /> : <EyeLucideIcon size={20} />}
+                    {showPassword ? <EyeClosedLucideIcon size={16} /> : <EyeLucideIcon size={16} />}
                   </button>
                 </label>
               </div>
@@ -345,13 +345,13 @@ export function UsersPage() {
           <tr>
             <th>Логин</th>
             <th>ФИО</th>
-            <th>Табельный номер</th>
+            <th className="table-col-center">Табельный номер</th>
             <th>Роль</th>
             <th>Отдел</th>
-            <th>Должность</th>
-            <th>Дата приёма</th>
-            <th>Нарушения</th>
-            <th>Штрафные баллы</th>
+            <th className="table-col-center">Должность</th>
+            <th className="table-col-center">Дата приёма</th>
+            <th className="table-col-center">Нарушения</th>
+            <th className="table-col-center">Штрафные баллы</th>
             <th className="table-col-actions">Действия</th>
           </tr>
         </thead>
@@ -360,13 +360,13 @@ export function UsersPage() {
             <tr key={x.id}>
               <td>{x.login}</td>
               <td>{x.fullName}</td>
-              <td>{x.tabNumber ?? (x as any).TabNumber ?? ""}</td>
+              <td className="table-col-center">{x.tabNumber ?? (x as any).TabNumber ?? ""}</td>
               <td>{x.role}</td>
               <td>{x.department}</td>
-              <td>{x.position}</td>
-              <td>{x.hireDate ? x.hireDate.split("T")[0] : ""}</td>
-              <td>{x.violationCount}</td>
-              <td>{x.penaltyPoints}</td>
+              <td className="table-col-center">{x.position}</td>
+              <td className="table-col-center">{x.hireDate ? x.hireDate.split("T")[0] : ""}</td>
+              <td className="table-col-center">{x.violationCount}</td>
+              <td className="table-col-center">{x.penaltyPoints}</td>
               <td>
                 <div className="users-table-actions">
                   <button

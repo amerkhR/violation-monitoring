@@ -507,7 +507,7 @@ h6 {
 
 .password-field input {
   width: 100%;
-  padding-right: 42px;
+  padding-right: 36px;
 }
 
 .password-field button {
@@ -545,6 +545,16 @@ th, td {
   padding: 8px;
 }
 
+.table-col-center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-col-center .violations-table-media {
+  justify-content: center;
+  width: 100%;
+}
+
 .login {
   min-height: 100vh;
   display: grid;
@@ -556,6 +566,11 @@ th, td {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.login form h1.login-title {
+  margin-block: 0.2rem;
+  line-height: 1.05;
 }
 
 input, button {
@@ -958,11 +973,12 @@ button.users-modal-submit-btn {
 .password-field button.password-field-toggle {
   display: inline-grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
+  right: 5px;
 }
 
 .layout.light-mode .password-field button.password-field-toggle {
@@ -1113,6 +1129,149 @@ button.users-modal-submit-btn {
 .layout.light-mode .recharts-cartesian-axis-line,
 .layout.light-mode .recharts-cartesian-axis-tick line {
   stroke: #888888;
+}
+
+/* Модальное окно отчётов */
+.reports-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 8px;
+}
+
+.reports-period-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+.layout.light-mode .reports-period-label {
+  color: rgba(34, 34, 34, 0.65);
+}
+
+a.reports-pdf-link {
+  font-weight: 500;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.layout.light-mode a.reports-pdf-link {
+  color: #222222;
+}
+
+.reports-pdf-missing {
+  opacity: 0.55;
+}
+
+/* Модальное окно нарушений */
+.violations-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+select.violations-modal-select,
+.violations-modal-description,
+.violations-modal-datetime input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+select.violations-modal-select {
+  appearance: none;
+  padding: 10px 34px 10px 10px;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  cursor: pointer;
+}
+
+.layout.dark-mode select.violations-modal-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 14px center;
+}
+
+.layout.light-mode select.violations-modal-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 14px center;
+}
+
+.violations-modal-datetime {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.violations-modal-datetime span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.violations-modal-file-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.violations-modal-file-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.violations-modal-photo-thumb {
+  width: 168px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #444444;
+}
+
+.layout.light-mode .violations-modal-photo-thumb {
+  border-color: #b8b3a5;
+}
+
+.violations-modal-video-check {
+  font-size: 1.2rem;
+  color: #4caf50;
+}
+
+.violations-table-media {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+a.violations-media-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 6px;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.92;
+}
+
+a.violations-media-link:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #555555;
+}
+
+.layout.light-mode a.violations-media-link:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: #b8b3a5;
 }
 
 @media (max-width: 900px) {

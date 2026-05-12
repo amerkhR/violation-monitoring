@@ -1,57 +1,200 @@
-import { useEffect, useState } from "react";
-import { api } from "../api";
+import { useCallback, useEffect, useState } from "react";
+import { api, API_ORIGIN } from "../api";
+import { TrashLucideIcon } from "../icons/tableActionIcons";
 
-type Report = {
+type ReportPeriod = "Daily" | "Monthly" | "Quarterly" | "Yearly";
+
+type ReportRow = {
   id: number;
-  type: string;
-  paramsJson: string;
   createdAt: string;
+  type: string;
+  periodLabel: string;
+  paramsJson: string;
+  pdfPath: string | null;
+  authorFullName: string;
   createdBy: number;
 };
 
-export function ReportsPage() {
-  const [rows, setRows] = useState<Report[]>([]);
-  const [type, setType] = useState("summary");
-  const [paramsJson, setParamsJson] = useState("{\"from\":\"2026-01-01\",\"to\":\"2026-12-31\"}");
+const periodOptions: { value: ReportPeriod; label: string }[] = [
+  { value: "Daily", label: "Дневной" },
+  { value: "Monthly", label: "Месячный" },
+  { value: "Quarterly", label: "Квартальный" },
+  { value: "Yearly", label: "Годовой" }
+];
 
-  const load = () => api.get("/reports").then((res) => setRows(res.data));
-  useEffect(() => { load(); }, []);
+/**
+ * В API время отчёта в UTC; без суффикса Z (частый случай с SQLite) браузер иначе
+ * воспринимает строку как локальную и сдвигает на 3 ч.
+ */
+function parseCreatedAtAsUtc(iso: string): Date {
+  const s = iso.trim();
+  if (!s) return new Date(NaN);
+  if (/[zZ]$/.test(s) || /[+-]\d{2}:?\d{2}$/.test(s)) return new Date(s);
+  const base = s.replace(/\.\d+/, "");
+  return new Date(`${base}Z`);
+}
+
+/** Отображение в Europe/Moscow (UTC+3). */
+function formatReportDateTimeUtcPlus3(iso: string): string {
+  const d = parseCreatedAtAsUtc(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat("ru-RU", {
+    timeZone: "Europe/Moscow",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(d);
+}
+
+export function ReportsPage() {
+  const role = localStorage.getItem("role");
+  const [rows, setRows] = useState<ReportRow[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [period, setPeriod] = useState<ReportPeriod>("Monthly");
+  const [submitting, setSubmitting] = useState(false);
+
+  const load = useCallback(() => {
+    api.get<ReportRow[]>("/reports").then((res) => setRows(res.data));
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const closeModal = () => setIsModalOpen(false);
 
   const createReport = async () => {
-    await api.post("/reports", { type, paramsJson });
-    await load();
+    setSubmitting(true);
+    try {
+      await api.post("/reports", { period });
+      await load();
+      closeModal();
+    } catch (e) {
+      console.error(e);
+      alert("Не удалось сформировать отчёт");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  const remove = async (id: number) => {
+    if (!confirm("Удалить отчёт? Файл будет удалён безвозвратно.")) return;
+    try {
+      await api.delete(`/reports/${id}`);
+      await load();
+    } catch (e) {
+      console.error(e);
+      alert("Не удалось удалить отчёт");
+    }
+  };
+
+  const isInspector = role === "Inspector";
 
   return (
     <section>
-      <h1>Отчеты</h1>
-      <div className="form-row card">
-        <input value={type} onChange={(e) => setType(e.target.value)} placeholder="Тип отчета" />
-        <input value={paramsJson} onChange={(e) => setParamsJson(e.target.value)} placeholder="JSON параметры" />
-        <button onClick={createReport}>Создать отчет</button>
+      <div className="users-page-toolbar">
+        <h1 className="users-page-title">
+          <span className="users-page-title-line1">Отчеты</span>
+          <span className="users-page-title-line2">по нарушениям</span>
+        </h1>
+        {isInspector && (
+          <button type="button" className="users-create-btn" onClick={() => setIsModalOpen(true)}>
+            Создать отчёт
+          </button>
+        )}
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Тип</th>
-            <th>Параметры</th>
-            <th>Создан</th>
-            <th>Автор</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((x) => (
-            <tr key={x.id}>
-              <td>{x.id}</td>
-              <td>{x.type}</td>
-              <td>{x.paramsJson}</td>
-              <td>{new Date(x.createdAt).toLocaleString()}</td>
-              <td>{x.createdBy}</td>
+
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-card card users-user-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="users-modal-header">
+              <h2 className="users-modal-title">Новый отчёт</h2>
+              <button type="button" className="users-modal-close" onClick={closeModal} aria-label="Закрыть">
+                ✕
+              </button>
+            </div>
+            <div className="reports-modal-body">
+              <label className="reports-period-label" htmlFor="report-period-select">
+                Период
+              </label>
+              <select
+                id="report-period-select"
+                className="violations-modal-select"
+                value={period}
+                onChange={(e) => setPeriod(e.target.value as ReportPeriod)}
+                aria-label="Период отчёта"
+              >
+                {periodOptions.map((o) => (
+                  <option value={o.value} key={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="users-modal-footer">
+              <button type="button" onClick={closeModal}>
+                Отмена
+              </button>
+              <button type="button" className="users-modal-submit-btn" disabled={submitting} onClick={createReport}>
+                {submitting ? "Формирование…" : "Сформировать PDF"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="card table-sheet">
+        <table>
+          <thead>
+            <tr>
+              <th>Создан</th>
+              <th>Автор</th>
+              <th className="table-col-center">Отчёт</th>
+              <th className="table-col-actions"> </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={4} style={{ textAlign: "center", padding: "20px", fontStyle: "italic" }}>
+                  Отчётов пока нет
+                </td>
+              </tr>
+            ) : (
+              rows.map((x) => (
+                <tr key={x.id}>
+                  <td>{formatReportDateTimeUtcPlus3(x.createdAt)}</td>
+                  <td>{x.authorFullName}</td>
+                  <td className="table-col-center">
+                    {x.pdfPath ? (
+                      <a href={`${API_ORIGIN}${x.pdfPath}`} target="_blank" rel="noreferrer" className="reports-pdf-link">
+                        Открыть PDF
+                      </a>
+                    ) : (
+                      <span className="reports-pdf-missing">—</span>
+                    )}
+                  </td>
+                  <td>
+                    <div className="users-table-actions">
+                      <button
+                        type="button"
+                        className="icon-action-btn icon-action-btn--danger"
+                        onClick={() => remove(x.id)}
+                        aria-label="Удалить отчёт"
+                        title="Удалить"
+                      >
+                        <TrashLucideIcon />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

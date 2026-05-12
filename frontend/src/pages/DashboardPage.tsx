@@ -91,14 +91,14 @@ export function DashboardPage() {
                   </ResponsiveContainer>
                 ) : (
                   <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
-                    📊 Данные отсутствуют
+                    Данные отсутствуют.
                   </div>
                 )}
               </div>
             </div>
           ) : (
             <div className="card" style={{ textAlign: "center", padding: "60px 20px", fontSize: "1.4rem", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)" }}>
-              🎉 У вас пока нет выявленных нарушений
+              У вас пока нет выявленных нарушений
             </div>
           )}
         </>
@@ -137,7 +137,7 @@ export function DashboardPage() {
                 </ResponsiveContainer>
               ) : (
                 <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
-                  📊 Данные отсутствуют
+                  Данные отсутствуют.
                 </div>
               )}
             </div>
@@ -167,7 +167,7 @@ export function DashboardPage() {
                 </ResponsiveContainer>
               ) : (
                 <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
-                  📊 Данные отсутствуют
+                  Данные отсутствуют.
                 </div>
               )}
             </div>
@@ -195,7 +195,7 @@ export function DashboardPage() {
               </table>
             ) : (
               <div style={{ textAlign: "center", padding: "40px", color: "var(--dash-empty-fg)", background: "var(--dash-empty-bg)", border: "2px dashed var(--dash-empty-border)", borderRadius: "8px" }}>
-                👥 Данные отсутствуют
+                Данные отсутствуют.
               </div>
             )}
           </div>

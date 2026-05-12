@@ -23,7 +23,7 @@ export function LoginPage({ onLogin }: Props) {
   return (
     <div className="login">
       <form onSubmit={submit} className="card">
-        <h1>Вход</h1>
+        <h1 className="login-title">Вход</h1>
         <input value={login} onChange={(e) => setLogin(e.target.value)} placeholder="Логин" />
         <input
           value={password}

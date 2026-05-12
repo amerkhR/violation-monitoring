@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/ViolationMonitoring.Api.csproj",
         "projectName": "ViolationMonitoring.Api",
         "projectPath": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/ViolationMonitoring.Api.csproj",
-        "packagesPath": "/home/amerkhanov/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/9672d67aa453afd297e41c07f7bab58a/nuget",
         "outputPath": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -63,6 +63,10 @@
             "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.5, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.10.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

@@ -57,6 +57,36 @@ public static class SeedData
         }
 
         db.SaveChanges();
+        EnsureInspectorsHaveEmployees(db);
+    }
+
+    private static void EnsureInspectorsHaveEmployees(AppDbContext db)
+    {
+        var firstDept = db.Departments.OrderBy(d => d.Id).FirstOrDefault();
+        if (firstDept is null)
+        {
+            return;
+        }
+
+        var inspectors = db.Users.Where(u => u.Role == UserRole.Inspector && u.EmployeeId == null).ToList();
+        foreach (var user in inspectors)
+        {
+            var tabNumber = TabNumberGenerator.GenerateUniqueAsync(db).GetAwaiter().GetResult();
+            var employee = new Employee
+            {
+                FullName = user.FullName,
+                DepartmentId = firstDept.Id,
+                Position = "Инспектор",
+                HireDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                IsActive = true,
+                Role = EmployeeRole.Inspector,
+                TabNumber = tabNumber
+            };
+            db.Employees.Add(employee);
+            db.SaveChanges();
+            user.EmployeeId = employee.Id;
+            db.SaveChanges();
+        }
     }
 
     private static void EnsureTabNumbers(AppDbContext db)
@@ -99,9 +129,9 @@ public static class SeedData
         // а следующий апдейт табельных номеров должен их устранить.
         try
         {
-            var tableName = db.Model.FindEntityType(typeof(Employee))?.GetTableName() ?? "Employees";
+            // Имя таблицы фиксировано: предупреждение EF1002 на интерполированный идентификатор не нужен.
             db.Database.ExecuteSqlRaw(
-                $"CREATE UNIQUE INDEX IF NOT EXISTS IX_Employees_TabNumber ON {tableName}(TabNumber);");
+                "CREATE UNIQUE INDEX IF NOT EXISTS IX_Employees_TabNumber ON Employees(TabNumber);");
         }
         catch
         {

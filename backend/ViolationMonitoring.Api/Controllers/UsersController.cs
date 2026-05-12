@@ -20,7 +20,7 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
     public async Task<IActionResult> GetAll()
     {
         var users = await db.Users
-            .Include(x => x.Employee)
+            .Include(x => x.Employee!)
             .ThenInclude(e => e.Department)
             .ToListAsync();
 
@@ -77,7 +77,7 @@ public class UsersController(AppDbContext db, IPasswordHasher passwordHasher) : 
         }
 
         var user = await db.Users
-            .Include(x => x.Employee)
+            .Include(x => x.Employee!)
             .ThenInclude(e => e.Department)
             .FirstOrDefaultAsync(x => x.Id == currentUserId);
 

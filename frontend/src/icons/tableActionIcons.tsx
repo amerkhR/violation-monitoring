@@ -41,6 +41,26 @@ export function EyeLucideIcon({ size = 20, ...rest }: IconProps) {
   );
 }
 
+/** Lucide `video` */
+export function VideoLucideIcon({ size = 20, ...rest }: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...rest}>
+      <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
+      <rect width="14" height="12" x="2" y="6" rx="2" />
+    </svg>
+  );
+}
+
+/** Lucide `camera` */
+export function CameraLucideIcon({ size = 20, ...rest }: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...rest}>
+      <path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" />
+      <circle cx="12" cy="13" r="3" />
+    </svg>
+  );
+}
+
 /** Lucide `eye-closed` — скрыть пароль */
 export function EyeClosedLucideIcon({ size = 20, ...rest }: IconProps) {
   return (

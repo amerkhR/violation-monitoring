@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using QuestPDF.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ViolationMonitoring.Api.Data;
@@ -73,6 +74,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+QuestPDF.Settings.License = LicenseType.Community;
+
 var app = builder.Build();
 var useHttpsRedirection = builder.Configuration.GetValue("UseHttpsRedirection", false);
 
@@ -102,6 +105,8 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.EnsureCreatedAsync();
+    await SqliteSchemaPatches.ApplyAsync(db.Database);
+
     SeedData.Initialize(db, scope.ServiceProvider.GetRequiredService<IPasswordHasher>());
 }
 

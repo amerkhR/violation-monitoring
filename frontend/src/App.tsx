@@ -12,7 +12,6 @@ import { api, API_ORIGIN } from "./api";
 import {
   BookAlertNavIcon,
   ClipboardListNavIcon,
-  ContactNavIcon,
   LayoutDashboardNavIcon,
   LogOutNavIcon,
   PanelToggleIcon,
@@ -177,7 +176,7 @@ export function App() {
             >
               {!collapsed && <span className="sidebar-nav-text">Сотрудники</span>}
               <span className="sidebar-nav-icon-end" aria-hidden>
-                <ContactNavIcon />
+                <UsersNavIcon />
               </span>
             </NavLink>
           )}
@@ -218,7 +217,7 @@ export function App() {
               </span>
             </NavLink>
           )}
-          {role === "Admin" && (
+          {(role === "Admin" || role === "Inspector") && (
             <NavLink
               to="/reports"
               className={({ isActive }) => navBtnClass(isActive)}
@@ -271,7 +270,7 @@ export function App() {
           <Route path="/violations" element={<ViolationsPage />} />
           {role === "Admin" && <Route path="/users" element={<UsersPage />} />}
           {role === "Admin" && <Route path="/violation-types" element={<ViolationTypesPage />} />}
-          {role === "Admin" && <Route path="/reports" element={<ReportsPage />} />}
+          {(role === "Admin" || role === "Inspector") && <Route path="/reports" element={<ReportsPage />} />}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<Navigate to="/" />} />
         </Routes>

@@ -47,7 +47,6 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
                 x.ViolationTypeId,
                 ViolationType = x.ViolationType!.Name,
                 x.Description,
-                x.Severity,
                 x.DateTimeUtc,
                 x.InspectorId,
                 Inspector = x.Inspector!.FullName,
@@ -82,7 +81,6 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
                 x.ViolationTypeId,
                 ViolationType = x.ViolationType!.Name,
                 x.Description,
-                x.Severity,
                 x.DateTimeUtc,
                 x.InspectorId,
                 Inspector = x.Inspector!.FullName,
@@ -122,13 +120,12 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
                 videoPath = await SaveFile(video, "videos");
             }
 
-            var points = scoringService.CalculatePoints(type, request.Severity);
+            var points = scoringService.CalculatePoints(type, type.SeverityDefault);
             var entity = new Violation
             {
                 EmployeeId = request.EmployeeId,
                 ViolationTypeId = request.ViolationTypeId,
                 Description = request.Description ?? string.Empty,
-                Severity = request.Severity,
                 DateTimeUtc = request.DateTimeUtc,
                 InspectorId = inspectorId,
                 PhotoPath = photoPath,
@@ -169,9 +166,8 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
             entity.EmployeeId = request.EmployeeId;
             entity.ViolationTypeId = request.ViolationTypeId;
             entity.Description = request.Description ?? string.Empty;
-            entity.Severity = request.Severity;
             entity.DateTimeUtc = request.DateTimeUtc;
-            entity.PenaltyPoints = scoringService.CalculatePoints(type, request.Severity);
+            entity.PenaltyPoints = scoringService.CalculatePoints(type, type.SeverityDefault);
 
             if (photo is not null)
             {

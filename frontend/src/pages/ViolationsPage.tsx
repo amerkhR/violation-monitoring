@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { api } from "../api";
-import { PencilLucideIcon, TrashLucideIcon } from "../icons/tableActionIcons";
+import { api, API_ORIGIN } from "../api";
+import { CameraLucideIcon, PencilLucideIcon, TrashLucideIcon, VideoLucideIcon } from "../icons/tableActionIcons";
 
 type Violation = {
   id: number;
@@ -9,7 +9,6 @@ type Violation = {
   violationTypeId: number;
   violationType: string;
   description: string;
-  severity: number;
   dateTimeUtc: string;
   inspectorId: number;
   inspector: string;
@@ -25,9 +24,9 @@ export function ViolationsPage() {
   const [employeeId, setEmployeeId] = useState(0);
   const [violationTypeId, setViolationTypeId] = useState(0);
   const [description, setDescription] = useState("");
-  const [severity, setSeverity] = useState(2);
   const [dateTimeUtc, setDateTimeUtc] = useState(new Date().toISOString().slice(0, 16));
   const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,10 +37,8 @@ export function ViolationsPage() {
 
   const load = () => {
     if (role === "Employee") {
-      // Для сотрудников получаем только их нарушения
       api.get("/violations/my-violations").then((res) => setRows(res.data));
     } else {
-      // Для инспекторов и админов получаем все нарушения с фильтрами
       api.get("/violations", {
         params: {
           employeeId: filterEmployeeId || undefined,
@@ -66,15 +63,15 @@ export function ViolationsPage() {
 
   useEffect(() => { load(); }, [role]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (role !== "Employee") {
-      load(); 
+      load();
     }
   }, [filterEmployeeId, filterTypeId]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (role === "Employee") {
-      load(); 
+      load();
     }
   }, [role]);
 
@@ -82,11 +79,20 @@ export function ViolationsPage() {
     setEmployeeId((prev) => (prev !== 0 && !employees.some((e) => e.id === prev) ? 0 : prev));
   }, [employees]);
 
+  useEffect(() => {
+    if (!photo) {
+      setPhotoPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(photo);
+    setPhotoPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [photo]);
+
   const resetForm = () => {
     setEmployeeId(0);
     setViolationTypeId(0);
     setDescription("");
-    setSeverity(2);
     setDateTimeUtc(new Date().toISOString().slice(0, 16));
     setPhoto(null);
     setVideo(null);
@@ -108,7 +114,6 @@ export function ViolationsPage() {
       const form = new FormData();
       form.append("employeeId", String(employeeId));
       form.append("violationTypeId", String(violationTypeId));
-      form.append("severity", String(severity));
       form.append("dateTimeUtc", new Date(dateTimeUtc).toISOString());
       form.append("description", description || "");
       if (photo) form.append("photo", photo);
@@ -136,7 +141,6 @@ export function ViolationsPage() {
     setEmployeeId(row.employeeId);
     setViolationTypeId(row.violationTypeId);
     setDescription(row.description);
-    setSeverity(row.severity);
     setDateTimeUtc(new Date(row.dateTimeUtc).toISOString().slice(0, 16));
     setIsModalOpen(true);
   };
@@ -145,6 +149,8 @@ export function ViolationsPage() {
     await api.delete(`/violations/${id}`);
     await load();
   };
+
+  const mediaColSpan = role === "Inspector" ? 7 : 6;
 
   return (
     <section>
@@ -162,133 +168,165 @@ export function ViolationsPage() {
         </div>
       )}
       {role === "Inspector" && (
-        <div className="form-row card" style={{ gap: '10px' }}>
-          <button onClick={openCreateModal}>Создать нарушение</button>
+        <div className="form-row card" style={{ gap: "10px" }}>
+          <button type="button" onClick={openCreateModal}>
+            Добавить нарушение
+          </button>
         </div>
       )}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-card card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-grid">
-              <select value={employeeId} onChange={(e) => setEmployeeId(Number(e.target.value))} aria-label="Сотрудник">
+          <div className="modal-card card violations-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="users-modal-header">
+              <h2 className="users-modal-title">{editingId ? "Редактировать нарушение" : "Добавить нарушение"}</h2>
+              <button type="button" className="users-modal-close" onClick={closeModal} aria-label="Закрыть">
+                ✕
+              </button>
+            </div>
+            <div className="violations-modal-body">
+              <select
+                className="violations-modal-select"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(Number(e.target.value))}
+                aria-label="Сотрудник"
+              >
                 <option value={0}>Выберите сотрудника</option>
                 {employees.map((x) => <option value={x.id} key={x.id}>{x.fullName}</option>)}
               </select>
-              <select value={violationTypeId} onChange={(e) => setViolationTypeId(Number(e.target.value))} aria-label="Тип нарушения">
+              <select
+                className="violations-modal-select"
+                value={violationTypeId}
+                onChange={(e) => setViolationTypeId(Number(e.target.value))}
+                aria-label="Тип нарушения"
+              >
                 <option value={0}>Тип нарушения</option>
                 {types.map((x) => <option value={x.id} key={x.id}>{x.name}</option>)}
               </select>
               <textarea
-                className="modal-textarea"
+                className="modal-textarea-full violations-modal-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Описание"
                 aria-label="Описание"
               />
-              <div className="modal-row">
-                <label>
-                  Серьезность
-                  <select value={severity} onChange={(e) => setSeverity(Number(e.target.value))}>
-                    <option value={1}>Low</option>
-                    <option value={2}>Medium</option>
-                    <option value={3}>High</option>
-                  </select>
-                </label>
-                <label>
-                  Время фиксации
-                  <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
-                </label>
-              </div>
-              <label>
+              <label className="violations-modal-datetime">
+                <span>Время фиксации</span>
+                <input type="datetime-local" value={dateTimeUtc} onChange={(e) => setDateTimeUtc(e.target.value)} />
+              </label>
+              <label className="violations-modal-file-label">
                 Фото
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div className="violations-modal-file-row">
                   <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
-                  {photo && (
-                    <div style={{ marginLeft: '10px' }}>
-                      <img src={URL.createObjectURL(photo)} alt="Photo" style={{ width: '100px', height: '120px', objectFit: 'cover', borderRadius: '8px' }} />
-                    </div>
+                  {photoPreviewUrl && (
+                    <img className="violations-modal-photo-thumb" src={photoPreviewUrl} alt="Предпросмотр фото" />
                   )}
                 </div>
               </label>
-              <label>
+              <label className="violations-modal-file-label">
                 Видео
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div className="violations-modal-file-row">
                   <input type="file" accept=".mp4,.mov,.avi,.webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
-                  {video && <span style={{ fontSize: '1.2rem', color: '#4caf50' }}>✓</span>}
+                  {video && <span className="violations-modal-video-check" aria-hidden>✓</span>}
                 </div>
               </label>
-              <div className="modal-row" style={{ justifyContent: 'flex-end' }}>
-                <button onClick={closeModal} type="button">Отмена</button>
-                <button onClick={save} type="button">{editingId ? 'Сохранить' : 'Создать'}</button>
-              </div>
+            </div>
+            <div className="users-modal-footer">
+              <button type="button" onClick={closeModal}>
+                Отмена
+              </button>
+              <button type="button" className="users-modal-submit-btn" onClick={save}>
+                {editingId ? "Сохранить" : "Добавить"}
+              </button>
             </div>
           </div>
         </div>
       )}
       <div className="card table-sheet">
-      <table>
-        <thead>
-          <tr>
-            <th>Сотрудник</th>
-            <th>Тип</th>
-            <th>Описание</th>
-            <th>Серьезность</th>
-            <th>Инспектор</th>
-            <th>Баллы</th>
-            <th>Медиа</th>
-            {role === "Inspector" && <th className="table-col-actions">Действия</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.length === 0 && role === "Employee" ? (
+        <table>
+          <thead>
             <tr>
-              <td colSpan={role === "Employee" ? 7 : 8} style={{ textAlign: 'center', padding: '20px', fontStyle: 'italic' }}>
-                У вас нет выявленных нарушений
-              </td>
+              <th>Сотрудник</th>
+              <th>Тип</th>
+              <th>Описание</th>
+              <th className="table-col-center">Инспектор</th>
+              <th className="table-col-center">Баллы</th>
+              <th className="table-col-center">Медиа</th>
+              {role === "Inspector" && <th className="table-col-actions">Действия</th>}
             </tr>
-          ) : (
-            rows.map((x) => (
-              <tr key={x.id}>
-                <td>{x.employee}</td>
-                <td>{x.violationType}</td>
-                <td>{x.description}</td>
-                <td>{x.severity}</td>
-                <td>{x.inspector}</td>
-                <td>{x.penaltyPoints}</td>
-                <td>
-                  {x.photoPath && <a href={`http://localhost:5000${x.photoPath}`} target="_blank" rel="noreferrer">Фото</a>}
-                  {x.videoPath && <> {x.photoPath ? "|" : ""} <a href={`http://localhost:5000${x.videoPath}`} target="_blank" rel="noreferrer">Видео</a></>}
+          </thead>
+          <tbody>
+            {rows.length === 0 && role === "Employee" ? (
+              <tr>
+                <td colSpan={mediaColSpan} style={{ textAlign: "center", padding: "20px", fontStyle: "italic" }}>
+                  У вас нет выявленных нарушений
                 </td>
-                {role === "Inspector" && (
-                  <td>
-                    <div className="users-table-actions">
-                      <button
-                        type="button"
-                        className="icon-action-btn"
-                        onClick={() => edit(x)}
-                        aria-label="Редактировать нарушение"
-                        title="Редактировать"
-                      >
-                        <PencilLucideIcon />
-                      </button>
-                      <button
-                        type="button"
-                        className="icon-action-btn icon-action-btn--danger"
-                        onClick={() => remove(x.id)}
-                        aria-label="Удалить нарушение"
-                        title="Удалить"
-                      >
-                        <TrashLucideIcon />
-                      </button>
+              </tr>
+            ) : (
+              rows.map((x) => (
+                <tr key={x.id}>
+                  <td>{x.employee}</td>
+                  <td>{x.violationType}</td>
+                  <td>{x.description}</td>
+                  <td className="table-col-center">{x.inspector}</td>
+                  <td className="table-col-center">{x.penaltyPoints}</td>
+                  <td className="table-col-center">
+                    <div className="violations-table-media">
+                      {x.photoPath && (
+                        <a
+                          href={`${API_ORIGIN}${x.photoPath}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="violations-media-link"
+                          title="Фото"
+                          aria-label="Открыть фото"
+                        >
+                          <CameraLucideIcon size={20} />
+                        </a>
+                      )}
+                      {x.videoPath && (
+                        <a
+                          href={`${API_ORIGIN}${x.videoPath}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="violations-media-link"
+                          title="Видео"
+                          aria-label="Открыть видео"
+                        >
+                          <VideoLucideIcon size={20} />
+                        </a>
+                      )}
                     </div>
                   </td>
-                )}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                  {role === "Inspector" && (
+                    <td>
+                      <div className="users-table-actions">
+                        <button
+                          type="button"
+                          className="icon-action-btn"
+                          onClick={() => edit(x)}
+                          aria-label="Редактировать нарушение"
+                          title="Редактировать"
+                        >
+                          <PencilLucideIcon />
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-action-btn icon-action-btn--danger"
+                          onClick={() => remove(x.id)}
+                          aria-label="Удалить нарушение"
+                          title="Удалить"
+                        >
+                          <TrashLucideIcon />
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </section>
   );
