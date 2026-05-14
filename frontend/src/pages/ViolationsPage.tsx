@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { api, API_ORIGIN } from "../api";
 import { CameraLucideIcon, PencilLucideIcon, TrashLucideIcon, VideoLucideIcon } from "../icons/tableActionIcons";
+import { parseApiDateTimeAsUtc } from "../dateTimeUtc";
+
+function toDatetimeLocalValue(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 
 type Violation = {
   id: number;
@@ -24,7 +30,7 @@ export function ViolationsPage() {
   const [employeeId, setEmployeeId] = useState(0);
   const [violationTypeId, setViolationTypeId] = useState(0);
   const [description, setDescription] = useState("");
-  const [dateTimeUtc, setDateTimeUtc] = useState(new Date().toISOString().slice(0, 16));
+  const [dateTimeUtc, setDateTimeUtc] = useState(() => toDatetimeLocalValue(new Date()));
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
   const [video, setVideo] = useState<File | null>(null);
@@ -93,7 +99,7 @@ export function ViolationsPage() {
     setEmployeeId(0);
     setViolationTypeId(0);
     setDescription("");
-    setDateTimeUtc(new Date().toISOString().slice(0, 16));
+    setDateTimeUtc(toDatetimeLocalValue(new Date()));
     setPhoto(null);
     setVideo(null);
     setEditingId(null);
@@ -141,7 +147,7 @@ export function ViolationsPage() {
     setEmployeeId(row.employeeId);
     setViolationTypeId(row.violationTypeId);
     setDescription(row.description);
-    setDateTimeUtc(new Date(row.dateTimeUtc).toISOString().slice(0, 16));
+    setDateTimeUtc(toDatetimeLocalValue(parseApiDateTimeAsUtc(row.dateTimeUtc)));
     setIsModalOpen(true);
   };
 

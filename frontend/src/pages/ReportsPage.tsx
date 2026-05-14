@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, API_ORIGIN } from "../api";
+import { formatDateTimeInMoscow } from "../dateTimeUtc";
 import { TrashLucideIcon } from "../icons/tableActionIcons";
 
 type ReportPeriod = "Daily" | "Monthly" | "Quarterly" | "Yearly";
@@ -26,26 +27,8 @@ const periodOptions: { value: ReportPeriod; label: string }[] = [
  * В API время отчёта в UTC; без суффикса Z (частый случай с SQLite) браузер иначе
  * воспринимает строку как локальную и сдвигает на 3 ч.
  */
-function parseCreatedAtAsUtc(iso: string): Date {
-  const s = iso.trim();
-  if (!s) return new Date(NaN);
-  if (/[zZ]$/.test(s) || /[+-]\d{2}:?\d{2}$/.test(s)) return new Date(s);
-  const base = s.replace(/\.\d+/, "");
-  return new Date(`${base}Z`);
-}
-
-/** Отображение в Europe/Moscow (UTC+3). */
 function formatReportDateTimeUtcPlus3(iso: string): string {
-  const d = parseCreatedAtAsUtc(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return new Intl.DateTimeFormat("ru-RU", {
-    timeZone: "Europe/Moscow",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(d);
+  return formatDateTimeInMoscow(iso, false);
 }
 
 export function ReportsPage() {

@@ -6,6 +6,7 @@ import { ViolationsPage } from "./pages/ViolationsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ViolationTypesPage } from "./pages/ViolationTypesPage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { JournalPage } from "./pages/JournalPage";
 import { UsersPage } from "./pages/UsersPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { api, API_ORIGIN } from "./api";
@@ -15,6 +16,7 @@ import {
   LayoutDashboardNavIcon,
   LogOutNavIcon,
   PanelToggleIcon,
+  ScrollTextNavIcon,
   ShieldAlertNavIcon,
   UsersNavIcon,
 } from "./icons/sidebarIcons";
@@ -230,6 +232,19 @@ export function App() {
               </span>
             </NavLink>
           )}
+          {role === "Admin" && (
+            <NavLink
+              to="/journal"
+              className={({ isActive }) => navBtnClass(isActive)}
+              title="Журнал операций"
+              aria-label="Журнал операций"
+            >
+              {!collapsed && <span className="sidebar-nav-text">Журнал операций</span>}
+              <span className="sidebar-nav-icon-end" aria-hidden>
+                <ScrollTextNavIcon />
+              </span>
+            </NavLink>
+          )}
         </nav>
         <button type="button" className="sidebar-nav-btn sidebar-logout-btn" onClick={logout} title="Выйти" aria-label="Выйти">
           {!collapsed && <span className="sidebar-nav-text">Выйти</span>}
@@ -270,6 +285,7 @@ export function App() {
           <Route path="/violations" element={<ViolationsPage />} />
           {role === "Admin" && <Route path="/users" element={<UsersPage />} />}
           {role === "Admin" && <Route path="/violation-types" element={<ViolationTypesPage />} />}
+          {role === "Admin" && <Route path="/journal" element={<JournalPage />} />}
           {(role === "Admin" || role === "Inspector") && <Route path="/reports" element={<ReportsPage />} />}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<Navigate to="/" />} />

@@ -133,6 +133,7 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
                 PenaltyPoints = points
             };
             db.Violations.Add(entity);
+            db.AppendOperationLog(null, CurrentAuthorDisplay(), AuditOperations.ViolationCreate);
             await db.SaveChangesAsync();
             return Ok(entity);
         }
@@ -181,6 +182,7 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
                 entity.VideoPath = await SaveFile(video, "videos");
             }
 
+            db.AppendOperationLog(null, CurrentAuthorDisplay(), AuditOperations.ViolationUpdate);
             await db.SaveChangesAsync();
             return NoContent();
         }
@@ -206,6 +208,7 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
         var isAdmin = User.IsInRole(nameof(UserRole.Admin));
         if (!isAdmin && entity.InspectorId != inspectorId) return Forbid();
 
+        db.AppendOperationLog(null, CurrentAuthorDisplay(), AuditOperations.ViolationDelete);
         db.Violations.Remove(entity);
         await db.SaveChangesAsync();
         return NoContent();
@@ -258,5 +261,12 @@ public class ViolationsController(AppDbContext db, IViolationScoringService scor
     {
         var raw = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
         return int.TryParse(raw, out var value) ? value : 0;
+    }
+
+    private string CurrentAuthorDisplay()
+    {
+        return User.FindFirstValue(ClaimTypes.Name)
+            ?? User.FindFirstValue(JwtRegisteredClaimNames.UniqueName)
+            ?? "—";
     }
 }

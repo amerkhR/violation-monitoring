@@ -31,6 +31,18 @@ internal static class SqliteSchemaPatches
             {
                 await database.ExecuteSqlRawAsync("ALTER TABLE Reports ADD COLUMN PdfPath TEXT;");
             }
+
+            // Идемпотентно: старые БД без журнала; проверка через sqlite_master иногда не срабатывала при порядке инициализации.
+            await database.ExecuteSqlRawAsync(
+                """
+                CREATE TABLE IF NOT EXISTS "AuditLogs" (
+                    "Id" INTEGER NOT NULL CONSTRAINT "PK_AuditLogs" PRIMARY KEY AUTOINCREMENT,
+                    "CreatedAtUtc" TEXT NOT NULL,
+                    "OperationName" TEXT NOT NULL,
+                    "UserId" INTEGER NULL,
+                    "AuthorDisplay" TEXT NOT NULL
+                );
+                """);
         }
         finally
         {
