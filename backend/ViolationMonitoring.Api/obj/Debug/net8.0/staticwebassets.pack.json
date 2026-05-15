@@ -65,10 +65,6 @@
       "PackagePath": "staticwebassets/uploads/images/ff39365c1e81480e8984b1650fcf54fa.jpg"
     },
     {
-      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/reports/05596cf55fd04c63baba80a004a0542b.pdf",
-      "PackagePath": "staticwebassets/uploads/reports/05596cf55fd04c63baba80a004a0542b.pdf"
-    },
-    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/reports/bb695026c2ec4cd9a4ba7d1373a4733e.pdf",
       "PackagePath": "staticwebassets/uploads/reports/bb695026c2ec4cd9a4ba7d1373a4733e.pdf"
     },

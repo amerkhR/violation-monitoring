@@ -7,4 +7,6 @@ public static class AuditOperations
     public const string ViolationCreate = "Создание нарушения";
     public const string ViolationUpdate = "Редактирование нарушения";
     public const string ViolationDelete = "Удаление нарушения";
+    public const string ReportGenerate = "Формирование отчёта";
+    public const string ReportDelete = "Удаление отчёта";
 }

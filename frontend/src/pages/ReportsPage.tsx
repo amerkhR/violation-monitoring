@@ -73,7 +73,7 @@ export function ReportsPage() {
     }
   };
 
-  const isInspector = role === "Inspector";
+  const canCreateReport = role === "Inspector" || role === "Admin";
 
   return (
     <section>
@@ -82,7 +82,7 @@ export function ReportsPage() {
           <span className="users-page-title-line1">Отчеты</span>
           <span className="users-page-title-line2">по нарушениям</span>
         </h1>
-        {isInspector && (
+        {canCreateReport && (
           <button type="button" className="users-create-btn" onClick={() => setIsModalOpen(true)}>
             Создать отчёт
           </button>

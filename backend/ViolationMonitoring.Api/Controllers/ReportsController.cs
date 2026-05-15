@@ -71,7 +71,7 @@ public class ReportsController(AppDbContext db, IWebHostEnvironment env) : Contr
     }
 
     [HttpPost]
-    [Authorize(Roles = nameof(UserRole.Inspector))]
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Inspector)}")]
     public async Task<IActionResult> Create([FromBody] ReportCreateRequest request)
     {
         var userId = GetCurrentUserId();
@@ -90,11 +90,7 @@ public class ReportsController(AppDbContext db, IWebHostEnvironment env) : Contr
 
         if (user.Employee is not null)
         {
-            var tabChanged = await TabNumberGenerator.EnsureEmployeeTabNumberAsync(db, user.Employee);
-            if (tabChanged)
-            {
-                await db.SaveChangesAsync();
-            }
+            await TabNumberGenerator.EnsureEmployeeTabNumberAsync(db, user.Employee);
         }
 
         var nowUtc = DateTime.UtcNow;
@@ -166,6 +162,13 @@ public class ReportsController(AppDbContext db, IWebHostEnvironment env) : Contr
             PdfPath = pdfPath
         };
         db.Reports.Add(report);
+        var author = CurrentAuthorDisplay();
+        if (string.IsNullOrWhiteSpace(author) || author == "—")
+        {
+            author = string.IsNullOrWhiteSpace(user.FullName) ? user.Login : user.FullName.Trim();
+        }
+
+        db.AppendOperationLog(null, author, AuditOperations.ReportGenerate);
         await db.SaveChangesAsync();
 
         return Ok(new
@@ -206,6 +209,17 @@ public class ReportsController(AppDbContext db, IWebHostEnvironment env) : Contr
             }
         }
 
+        var author = CurrentAuthorDisplay();
+        if (string.IsNullOrWhiteSpace(author) || author == "—")
+        {
+            var u = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+            if (u is not null)
+            {
+                author = string.IsNullOrWhiteSpace(u.FullName) ? u.Login : u.FullName.Trim();
+            }
+        }
+
+        db.AppendOperationLog(null, author, AuditOperations.ReportDelete);
         db.Reports.Remove(report);
         await db.SaveChangesAsync();
         return NoContent();
@@ -215,5 +229,12 @@ public class ReportsController(AppDbContext db, IWebHostEnvironment env) : Contr
     {
         var raw = User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
         return int.TryParse(raw, out var id) ? id : 0;
+    }
+
+    private string CurrentAuthorDisplay()
+    {
+        return User.FindFirstValue(ClaimTypes.Name)
+            ?? User.FindFirstValue(JwtRegisteredClaimNames.UniqueName)
+            ?? "—";
     }
 }
