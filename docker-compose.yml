@@ -29,7 +29,8 @@ services:
       context: ./frontend
       network: host
       args:
-        VITE_API_BASE_URL: "http://localhost:5000/api"
+        # Относительный URL: запросы идут через nginx на backend (работает с IP сервера)
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
         HTTP_PROXY: ${HTTP_PROXY:-}
         HTTPS_PROXY: ${HTTPS_PROXY:-}
         NO_PROXY: ${NO_PROXY:-}

@@ -228,10 +228,15 @@ export COMPOSE_DOCKER_CLI_BUILD=1
 
 В образе настроен nginx с `try_files` для SPA — пересоберите frontend: `docker compose up --build -d frontend`.
 
-## Ограничения текущей конфигурации
+## Доступ по IP сервера
 
-- Frontend обращается к API по адресу `http://localhost:5000/api` (зашито при сборке образа). Это рассчитано на работу **на том же ПК**, где запущен Docker.
-- CORS в приложении разрешён для `http://localhost:5173` — доступ с других хостов в сети потребует изменений в коде backend.
+Frontend собирается с `VITE_API_BASE_URL=/api`. Nginx проксирует `/api` и `/uploads` на backend — вход работает при открытии `http://IP_СЕРВЕРА:5173` с любого компьютера.
+
+После изменения `nginx.conf` или URL API пересоберите frontend:
+
+```bash
+docker compose up --build -d frontend
+```
 
 ## Структура контейнеризации
 
