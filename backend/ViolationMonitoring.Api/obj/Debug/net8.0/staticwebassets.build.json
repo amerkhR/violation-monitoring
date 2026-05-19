@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "TJZdN0D4XDC1YvM+ZVeWu4+O0mrUQftajo2ty3AMkag=",
+  "Hash": "Wt8wpavFFx9roBi3qSV35x6aM7qhyHmsADHG/7N97SQ=",
   "Source": "ViolationMonitoring.Api",
   "BasePath": "_content/ViolationMonitoring.Api",
   "Mode": "Default",
@@ -226,6 +226,25 @@
       "OriginalItemSpec": "wwwroot/uploads/images/32055ae656c14fceb2bbf33a5ccb7432.png"
     },
     {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/3d3ede2e6dde4c448c12462aa04048f2.jpeg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/images/3d3ede2e6dde4c448c12462aa04048f2.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/images/3d3ede2e6dde4c448c12462aa04048f2.jpeg"
+    },
+    {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/images/b12c610b2c9c4d0a83dafa29da6a5ec9.jpeg",
       "SourceId": "ViolationMonitoring.Api",
       "SourceType": "Discovered",
@@ -321,6 +340,25 @@
       "OriginalItemSpec": "wwwroot/uploads/images/ff39365c1e81480e8984b1650fcf54fa.jpg"
     },
     {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/reports/ad2657bc39a1411fb15f7edf1d367bdb.pdf",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/reports/ad2657bc39a1411fb15f7edf1d367bdb.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/reports/ad2657bc39a1411fb15f7edf1d367bdb.pdf"
+    },
+    {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/reports/bb695026c2ec4cd9a4ba7d1373a4733e.pdf",
       "SourceId": "ViolationMonitoring.Api",
       "SourceType": "Discovered",
@@ -357,6 +395,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/reports/ccccc9e4e482432bb5187b53f83326f9.pdf"
+    },
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/videos/39b59830844b4864ae22284f8f72b796.mp4",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/videos/39b59830844b4864ae22284f8f72b796.mp4",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/videos/39b59830844b4864ae22284f8f72b796.mp4"
     },
     {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/videos/43c85af9d8934df1bf3e3bc73e9cd461.mp4",
