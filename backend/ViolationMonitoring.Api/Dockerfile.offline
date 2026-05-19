@@ -1,0 +1,12 @@
+# Сборка без dotnet restore внутри Docker — только runtime-образ.
+# Сначала на машине с интернетом:
+#   dotnet publish -c Release -o publish /p:UseAppHost=false
+# Затем: docker compose -f docker-compose.yml -f docker-compose.offline.yml up --build -d
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY publish/ .
+RUN mkdir -p /app/data /app/wwwroot/uploads/images /app/wwwroot/uploads/videos /app/wwwroot/uploads/employee-photos
+ENV ASPNETCORE_URLS=http://+:5000
+EXPOSE 5000
+ENTRYPOINT ["dotnet", "ViolationMonitoring.Api.dll"]

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Wt8wpavFFx9roBi3qSV35x6aM7qhyHmsADHG/7N97SQ=",
+  "Hash": "MHT9HzZ64i4LV6ZNsI9H605pVkhoSlNBvwrK/FjFun0=",
   "Source": "ViolationMonitoring.Api",
   "BasePath": "_content/ViolationMonitoring.Api",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/0a4ab4ac40474110ad39150ad267c0af.jpg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/0a4ab4ac40474110ad39150ad267c0af.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/0a4ab4ac40474110ad39150ad267c0af.jpg"
+    },
     {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/0bd8e60e046544b18eb43cb1b69f06ce.jpeg",
       "SourceId": "ViolationMonitoring.Api",
@@ -74,6 +93,25 @@
       "OriginalItemSpec": "wwwroot/uploads/employee-photos/3ebde0d0b91940418f11521db6540ae4.jpg"
     },
     {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/6af3be2cea244f81a7b7b004cfc2bfda.jpeg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/6af3be2cea244f81a7b7b004cfc2bfda.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/6af3be2cea244f81a7b7b004cfc2bfda.jpeg"
+    },
+    {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/a9b1e344f5bc47f5adf6c1f5ae523a00.jpg",
       "SourceId": "ViolationMonitoring.Api",
       "SourceType": "Discovered",
@@ -112,6 +150,25 @@
       "OriginalItemSpec": "wwwroot/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
     },
     {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/ca46b4208b2a49a48885cf6c470f796f.jpg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/ca46b4208b2a49a48885cf6c470f796f.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/ca46b4208b2a49a48885cf6c470f796f.jpg"
+    },
+    {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg",
       "SourceId": "ViolationMonitoring.Api",
       "SourceType": "Discovered",
@@ -129,6 +186,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg"
+    },
+    {
+      "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/d4f8a3176ddc41449cda12d364485885.jpg",
+      "SourceId": "ViolationMonitoring.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/",
+      "BasePath": "_content/ViolationMonitoring.Api",
+      "RelativePath": "uploads/employee-photos/d4f8a3176ddc41449cda12d364485885.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/employee-photos/d4f8a3176ddc41449cda12d364485885.jpg"
     },
     {
       "Identity": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/dc503ac11b704427a40245bd41631d37.jpg",

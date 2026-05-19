@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/0a4ab4ac40474110ad39150ad267c0af.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/0a4ab4ac40474110ad39150ad267c0af.jpg"
+    },
+    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/0bd8e60e046544b18eb43cb1b69f06ce.jpeg",
       "PackagePath": "staticwebassets/uploads/employee-photos/0bd8e60e046544b18eb43cb1b69f06ce.jpeg"
     },
@@ -13,6 +17,10 @@
       "PackagePath": "staticwebassets/uploads/employee-photos/3ebde0d0b91940418f11521db6540ae4.jpg"
     },
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/6af3be2cea244f81a7b7b004cfc2bfda.jpeg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/6af3be2cea244f81a7b7b004cfc2bfda.jpeg"
+    },
+    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/a9b1e344f5bc47f5adf6c1f5ae523a00.jpg",
       "PackagePath": "staticwebassets/uploads/employee-photos/a9b1e344f5bc47f5adf6c1f5ae523a00.jpg"
     },
@@ -21,8 +29,16 @@
       "PackagePath": "staticwebassets/uploads/employee-photos/b12eae6202c849558be9891675785bdf.jpg"
     },
     {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/ca46b4208b2a49a48885cf6c470f796f.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/ca46b4208b2a49a48885cf6c470f796f.jpg"
+    },
+    {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg",
       "PackagePath": "staticwebassets/uploads/employee-photos/cde479ee80b8450696974f6b31e4d837.jpg"
+    },
+    {
+      "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/d4f8a3176ddc41449cda12d364485885.jpg",
+      "PackagePath": "staticwebassets/uploads/employee-photos/d4f8a3176ddc41449cda12d364485885.jpg"
     },
     {
       "Id": "/home/amerkhanov/violation-monitoring/backend/ViolationMonitoring.Api/wwwroot/uploads/employee-photos/dc503ac11b704427a40245bd41631d37.jpg",

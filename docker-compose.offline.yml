@@ -1,0 +1,6 @@
+# Обход NU1301: publish собирается вне Docker (на ПК с доступом к nuget.org).
+services:
+  backend:
+    build:
+      context: ./backend/ViolationMonitoring.Api
+      dockerfile: Dockerfile.offline

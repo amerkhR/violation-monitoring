@@ -4,7 +4,7 @@
 
 ## Структура
 
-- `backend/ViolationMonitoring.Api` - ASP.NET Core Web API + EF Core + SQL Server + JWT
+- `backend/ViolationMonitoring.Api` - ASP.NET Core Web API + EF Core (SQLite) + JWT
 - `frontend` - React + TypeScript + Vite
 
 ## Быстрый старт
@@ -20,15 +20,8 @@
 
 - `ConnectionStrings__DefaultConnection`
 - `Jwt__Key` (не менее 32 символов)
-- `Cors__AllowedOrigins__0` (и последующие origin)
 
-### 2) SQL Server
-
-Убедитесь, что SQL Server доступен, и обновите строку подключения в `backend/ViolationMonitoring.Api/appsettings.json`:
-
-`ConnectionStrings:DefaultConnection`
-
-### 3) Backend
+### 2) Backend
 
 ```bash
 cd backend/ViolationMonitoring.Api
@@ -42,7 +35,7 @@ Health endpoint:
 
 - `GET /health`
 
-### 4) Frontend
+### 3) Frontend
 
 ```bash
 cd frontend
@@ -52,11 +45,13 @@ npm run dev
 
 Frontend использует `VITE_API_BASE_URL` (по умолчанию `http://localhost:5000/api`).
 
-## Запуск в Docker (production-like)
+## Запуск в Docker
+
+Подробная инструкция по развертыванию на другом ПК: **[DOCKER.md](./DOCKER.md)**.
 
 ```bash
 cp .env.example .env
-# при необходимости измени SQL_SA_PASSWORD и JWT_KEY
+# задайте JWT_KEY не короче 32 символов
 docker compose up --build -d
 ```
 
@@ -64,7 +59,6 @@ docker compose up --build -d
 
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:5000`
-- SQL Server: `localhost:1433`
 
 ## Тестовые пользователи
 
